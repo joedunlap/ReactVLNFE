@@ -5,7 +5,7 @@ const CreateProject = () => {
    const [projectData, setProjectData] = useState({
     name: '',
     description: ''
-   })
+   });
 
     const handleFormChange = (e) => {
         const { name, value } = e.target;
@@ -16,7 +16,7 @@ const CreateProject = () => {
         })
     }
 
-    const handleFormSubmit = async(e) => {
+    const handleFormSubmit = async(e: { preventDefault: () => void; }) => {
         e.preventDefault()
         try {
             await axios.post('http://localhost:3000/api/v1/projects', projectData)
@@ -33,8 +33,8 @@ const CreateProject = () => {
             <h1 className="title">Create a New Project</h1>
             <form onSubmit={handleFormSubmit} className="container">
                 <div className="projectname">
-                    <input type="text" placeholder="Project Name" onChange={handleFormChange} value={projectData.name} name='projectName' />
-                    <input type="text" placeholder="Description" onChange={handleFormChange} value={projectData.description} name='projectDescription' />
+                    <input type="text" placeholder="Project Name" onChange={handleFormChange} value={projectData.name} name='name' />
+                    <input type="text" placeholder="Description" onChange={handleFormChange} value={projectData.description} name='description' />
                 <button>Submit</button>
                 </div>
             </form>
