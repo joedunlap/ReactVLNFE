@@ -6,6 +6,7 @@ interface Project {
     id: string; 
     name: string;
     description: string;
+    createdAt: string; // Include createdAt property
 }
 
 const ProjectList: React.FC = () => {
@@ -16,16 +17,42 @@ const ProjectList: React.FC = () => {
             .then(response => setProjects(response.data))
             .catch(error => console.error('Error fetching projects:', error))
     }, []);
+
+    // Function to format date
+    const formatDate = (dateString: string) => {
+        const options: Intl.DateTimeFormatOptions = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
     return (
         <div className='container mt-5'>
             <h2>Projects</h2>
-            <ul className="list-group">
-        {projects.map(project => (
-          <li key={project.id} className="list-group-item">
-            <Link to={`/projects/${project.id}`}>{project.name}</Link>
-          </li>
-        ))}
-      </ul>
+            <table className="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {projects.map(project => (
+                        <tr key={project.id}>
+                            <td>{project.id}</td>
+                            <td>
+                                <Link to={`/projects/${project.id}`}>{project.name}</Link>
+                            </td>
+                            <td>{project.description}</td>
+                            <td>{formatDate(project.createdAt)}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };
