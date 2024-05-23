@@ -1,4 +1,4 @@
-import React from 'react';
+import "./App.css"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/navbar';
 import ProjectPage from './pages/projectpage';
@@ -6,14 +6,14 @@ import ProjectDetail from './components/projectdetail';
 
 
 
-const App: React.FC = () => {
+function App() {
   return (
     <Router>
       <Navbar />
       <div className="container mt-5">
         <Routes>
-          <Route path="/projects" Component={ProjectPage} />
-          <Route path="/projects/:id" Component={ProjectDetail} />
+          <Route path="/projects" element={<ProjectPage />} />
+          <Route path="/projects/:id" element={<ProjectDetail />} />
         </Routes>
       </div>
     </Router>
