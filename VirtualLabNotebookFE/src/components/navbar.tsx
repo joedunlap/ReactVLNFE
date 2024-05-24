@@ -1,10 +1,15 @@
 import React from "react";
 import { Link } from 'react-router-dom';
+import flask from '../assets/images/flask.png'
+
+
+
 
 const Navbar: React.FC = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
             <div className="container-fluid">
+                <Link className="navbar-brand" to="/"><img src={flask} alt ="flask logo" className="flask" style={{ width: '50px', height: 'auto' }}/></Link>
                 <Link className="navbar-brand" to="/">Virtual Lab Notebook</Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
