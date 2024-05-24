@@ -34,7 +34,7 @@ const ProjectList: React.FC = () => {
             <table className="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Project ID</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Created At</th>
