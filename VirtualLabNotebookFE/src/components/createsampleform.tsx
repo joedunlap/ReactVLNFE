@@ -97,7 +97,7 @@ const CreateSample: React.FC = () => {
           <textarea
             className="form-control mb-2"
             placeholder="Optional description of sample. Use custom fields for sample data."
-            name="briefdescription"
+            name="description"
             value={sampleData.description}
             onChange={handleInputChange}
           />
