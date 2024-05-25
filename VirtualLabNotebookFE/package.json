@@ -13,7 +13,8 @@
     "axios": "^1.7.1",
     "bootstrap": "^5.3.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.24.1",
@@ -30,12 +31,18 @@
   },
   "babel": {
     "presets": [
-      ["@babel/preset-env", {
-        "targets": "> 0.25%, not dead"
-      }],
-      ["@babel/preset-react", {
-        "runtime": "automatic"
-      }]
+      [
+        "@babel/preset-env",
+        {
+          "targets": "> 0.25%, not dead"
+        }
+      ],
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "automatic"
+        }
+      ]
     ]
   }
 }

@@ -1,27 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
+import axios, { AxiosResponse } from 'axios';
 
-const CreateSample = () => {
+// Define interfaces
+interface SampleData {
+  name: string;
+  briefdescription: string;
+  customFields: { [key: string]: { value: string } };
+}
+
+interface CreatedSample extends SampleData {
+  id: string;
+  createdAt: string;
+}
+
+const CreateSample: React.FC = () => {
   const location = useLocation();
-  const { projectName, projectId } = location.state || { projectName: '', projectId: '' };
+  const { id: projectId } = useParams<{ id: string }>();
 
-  const [sampleData, setSampleData] = useState({
+  console.log('Location Object:', location);
+  const state = location.state as { projectName?: string } || {};
+  const projectName = state.projectName || 'Default Project Name';
+
+  console.log('Received State in CreateSample:', { projectName, projectId });
+
+  const [sampleData, setSampleData] = useState<SampleData>({
     name: '',
-    projectId: '',
     briefdescription: '',
     customFields: {}
   });
 
-  useEffect(() => {
-    // Set the projectId in the state from the location state
-    setSampleData((prev) => ({
-      ...prev,
-      projectId: projectId
-    }));
-  }, [projectId]);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [createdSample, setCreatedSample] = useState<CreatedSample | null>(null);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setSampleData((prev) => ({
       ...prev,
@@ -29,7 +42,7 @@ const CreateSample = () => {
     }));
   };
 
-  const handleCustomFieldChange = (e) => {
+  const handleCustomFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSampleData((prev) => ({
       ...prev,
@@ -40,13 +53,26 @@ const CreateSample = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/samples', sampleData);
+      const response: AxiosResponse<CreatedSample> = await axios.post(
+        `http://localhost:3000/api/v1/projects/${projectId}/samples`,
+        sampleData
+      );
       console.log('Sample created:', response.data);
+      setCreatedSample(response.data);
+      setSuccessMessage('Sample created successfully!');
+      setErrorMessage('');
+      setSampleData({
+        name: '',
+        briefdescription: '',
+        customFields: {}
+      });
     } catch (err) {
       console.error('Error creating sample:', err);
+      setErrorMessage('Failed to create sample. Please try again.');
+      setSuccessMessage('');
     }
   };
 
@@ -58,6 +84,7 @@ const CreateSample = () => {
         <div>
           <label>Name:</label>
           <input
+            className="form-control mb-2"
             type="text"
             name="name"
             value={sampleData.name}
@@ -66,20 +93,10 @@ const CreateSample = () => {
           />
         </div>
         <div>
-          <label>Project ID:</label>
-          <input
-            type="text"
-            name="projectId"
-            value={sampleData.projectId}
-            onChange={handleInputChange}
-            required
-            readOnly
-          />
-        </div>
-        <div>
-          <label>Brief Description:</label>
+          <label>Description:</label>
           <textarea
-            placeholder="optional description of sample. use custom fields for sample data."
+            className="form-control mb-2"
+            placeholder="Optional description of sample. Use custom fields for sample data."
             name="briefdescription"
             value={sampleData.briefdescription}
             onChange={handleInputChange}
@@ -88,12 +105,14 @@ const CreateSample = () => {
         <div>
           <label>Custom Fields:</label>
           <input
+            className="form-control mb-2"
             type="text"
             name="weight"
             placeholder="Weight"
             onChange={handleCustomFieldChange}
           />
           <input
+            className="form-control mb-2"
             type="text"
             name="dilution"
             placeholder="Dilution"
@@ -101,8 +120,21 @@ const CreateSample = () => {
           />
           {/* Add more custom fields as needed */}
         </div>
-        <button type="submit">Create Sample</button>
+        <button className="btn btn-primary" type="submit">Create Sample</button>
       </form>
+
+      {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
+      {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+
+      {createdSample && (
+        <div className="created-sample">
+          <h2>Sample Details</h2>
+          <p><strong>Name:</strong> {createdSample.name}</p>
+          <p><strong>Description:</strong> {createdSample.briefdescription}</p>
+          <p><strong>UUID:</strong> {createdSample.id}</p>
+          <p><strong>Created At:</strong> {createdSample.createdAt}</p>
+        </div>
+      )}
     </div>
   );
 };

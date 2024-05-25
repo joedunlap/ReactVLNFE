@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 interface Project {
   id: string;
@@ -39,10 +39,9 @@ const ProjectDetail: React.FC = () => {
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       {project ? (
         <>
-          <h2><strong>Project Name: </strong>{project.name}</h2>
-          <p><strong>Project ID: </strong>{project.id}</p>
-          <p><strong>Project Description: </strong>{project.description}</p>
-          <p><strong>Created At: </strong> {new Date(project.createdAt).toLocaleDateString()}</p>
+          <h2>{project.name}</h2>
+          <p>{project.description}</p>
+          <p><strong>Created At:</strong> {new Date(project.createdAt).toLocaleDateString()}</p>
           
           <h3>Samples</h3>
           {samples.length > 0 ? (
@@ -66,24 +65,19 @@ const ProjectDetail: React.FC = () => {
             </table>
           ) : (
             <p>No samples found for this project.</p>
-           
           )}
-            <button className="btn btn-primary">
-            <Link 
-  to={{ 
-    pathname: `/projects/${id}/create-sample`,
-    state: { projectName: project.name, projectId: project.id }
-  }} 
-  className="text-white"
+          
+          {console.log('Link State:', { projectName: project.name, projectId: project.id })}
+          <Link 
+  to={`/projects/${id}/create-sample`}
+  state={{ projectName: project.name, projectId: project.id }}
+  className="btn btn-primary"
 >
   Create Sample
 </Link>
-          </button>
-
         </>
       ) : (
         <p>Loading project details...</p>
-        
       )}
     </div>
   );
