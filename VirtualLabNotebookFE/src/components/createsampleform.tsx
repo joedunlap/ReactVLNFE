@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from 'axios';
 // Define interfaces
 interface SampleData {
   name: string;
-  briefdescription: string;
+  description: string;
   customFields: { [key: string]: { value: string } };
 }
 
@@ -26,7 +26,7 @@ const CreateSample: React.FC = () => {
 
   const [sampleData, setSampleData] = useState<SampleData>({
     name: '',
-    briefdescription: '',
+    description: '',
     customFields: {}
   });
 
@@ -66,7 +66,7 @@ const CreateSample: React.FC = () => {
       setErrorMessage('');
       setSampleData({
         name: '',
-        briefdescription: '',
+        description: '',
         customFields: {}
       });
     } catch (err) {
@@ -98,7 +98,7 @@ const CreateSample: React.FC = () => {
             className="form-control mb-2"
             placeholder="Optional description of sample. Use custom fields for sample data."
             name="briefdescription"
-            value={sampleData.briefdescription}
+            value={sampleData.description}
             onChange={handleInputChange}
           />
         </div>
@@ -130,7 +130,7 @@ const CreateSample: React.FC = () => {
         <div className="created-sample">
           <h2>Sample Details</h2>
           <p><strong>Name:</strong> {createdSample.name}</p>
-          <p><strong>Description:</strong> {createdSample.briefdescription}</p>
+          <p><strong>Description:</strong> {createdSample.description}</p>
           <p><strong>UUID:</strong> {createdSample.id}</p>
           <p><strong>Created At:</strong> {createdSample.createdAt}</p>
         </div>
