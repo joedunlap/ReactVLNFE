@@ -5,6 +5,7 @@ import ProjectPage from './pages/projectpage';
 import ProjectDetail from './components/projectdetail';
 import CreateProject from "./components/newprojectform";
 import Home from "./pages/home";
+import CreateSample from "./components/createsampleform";
 
 
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/projects" element={<ProjectPage />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/projects/new" element={<CreateProject />} />
+          <Route path="/projects/:id/create-sample" element={<CreateSample />} />
         </Routes>
       </div>
     </Router>
