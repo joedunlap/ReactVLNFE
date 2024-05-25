@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 
 // Define interfaces
@@ -121,6 +121,11 @@ const CreateSample: React.FC = () => {
           {/* Add more custom fields as needed */}
         </div>
         <button className="btn btn-primary" type="submit">Create Sample</button>
+        <button className="btn btn-secondary">
+          <Link to={`/projects/${projectId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            Back to Current Project
+          </Link>
+        </button>
       </form>
 
       {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
