@@ -8,9 +8,9 @@ interface DeleteButtonProps {
 const DeleteProjectButton: React.FC<DeleteButtonProps> =
 ({ projectId, onDelete })=> {
     const deleteProject = async () => {
+        console.log('Deleting project with ID:', projectId)
         try{
-            await axios.delete('/api/v1/projects/${projectId}');
-            onDelete(projectId);
+            await axios.delete(`http://localhost:3000/api/v1/projects/${projectId}`);            onDelete(projectId);
             alert('Project deleted successfully')
         } catch (err) {
             console.error('Error deleting project:', err);
