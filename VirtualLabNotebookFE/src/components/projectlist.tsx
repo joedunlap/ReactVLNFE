@@ -54,7 +54,7 @@ const ProjectList: React.FC = () => {
               <td>{project.description}</td>
               <td>{formatDate(project.createdAt)}</td>
               <td>
-                <DeleteProjectButton projectId={project.id} onDelete={handleDelete} />
+                <DeleteProjectButton projectId={project.id} projectName={project.name} onDelete={handleDelete} />
               </td>
             </tr>
           ))}
