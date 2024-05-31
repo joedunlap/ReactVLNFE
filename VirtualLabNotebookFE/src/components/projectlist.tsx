@@ -60,6 +60,7 @@ const ProjectList: React.FC = () => {
           ))}
         </tbody>
       </table>
+      <Link to="/projects/new" className="btn btn-primary">Create a New Project</Link>
     </div>
   );
 };

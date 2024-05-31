@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
+import { Link } from 'react-router-dom';
 
 interface ProjectData {
     name: string;
@@ -57,7 +58,9 @@ const CreateProject = () => {
                 <div className="projectname">
                     <input className="form-control mb-2" type="text" placeholder="Project Name" onChange={handleFormChange} value={projectData.name} name="name" />
                     <textarea className="form-control mb-2" placeholder="Description" onChange={handleFormChange} value={projectData.description} name="description" />
-                <button className="btn btn-primary" type="submit">Submit</button>
+                <button className="btn btn-primary m-1" type="submit">Submit</button>
+                <Link to="/projects" className="btn btn-secondary m-1">Back to Projects</Link>
+
                 </div>
             </form>
 
