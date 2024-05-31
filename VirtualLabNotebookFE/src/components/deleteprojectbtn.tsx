@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface DeleteButtonProps {
   projectId: string;
@@ -24,7 +26,9 @@ const DeleteProjectButton: React.FC<DeleteButtonProps> = ({ projectId, projectNa
   };
 
   return (
-    <button onClick={deleteProject} className="btn btn-danger">Delete</button>
+    <IconButton aria-label="delete" onClick={deleteProject} color="warning">
+      <DeleteIcon />
+    </IconButton>
   );
 };
 
