@@ -1,87 +1,103 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
 
-interface ProjectData {
-  name: string;
-  description: string;
-  // Add other fields as necessary
+interface Project {
+    id: string;
+    name: string;
+    description: string;
+    createdAt: string;
 }
 
-const UpdateProject: React.FC = () => {
-  const { id: projectId } = useParams<{ id: string }>(); // Extract projectId from URL parameters
-  const navigate = useNavigate(); // Hook to programmatically navigate
-  const [projectData, setProjectData] = useState<ProjectData>({
-    name: '',
-    description: '',
-    // Initialize other fields as necessary
-  });
+interface UpdateProjectProps {
+    project: Project;
+    onUpdate: (updatedProject: Project) => void;
+}
 
-  // Fetch existing project data
-  useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3000/api/v1/projects/${projectId}`);
-        setProjectData(response.data);
-      } catch (error) {
-        console.error('Error fetching project data:', error);
-      }
+const UpdateProject: React.FC<UpdateProjectProps> = ({ project, onUpdate }) => {
+    const [formData, setFormData] = useState({
+        name: '',
+        description: '',
+        id: ''
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (project) {
+            setFormData({
+                name: project.name,
+                description: project.description,
+                id: project.id
+            });
+        }
+    }, [project]);
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
     };
 
-    fetchProject();
-  }, [projectId]);
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setLoading(true);
+        try {
+            const response = await axios.patch(`http://localhost:3000/api/v1/projects/${project.id}`, formData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            onUpdate(response.data); // Call the onUpdate handler with the updated project
+            setLoading(false);
+        } catch (err) {
+            setError(err.message);
+            setLoading(false);
+        }
+    };
 
-  // Handle form input changes
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setProjectData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
 
-  // Handle form submission
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    console.log('Submitting project data:', projectData); // Log the data being sent
-    try {
-      await axios.patch(`http://localhost:3000/api/v1/projects/${projectId}`, projectData);
-      // Handle successful update (e.g., redirect to project detail page or show a success message)
-      navigate(`/projects/${projectId}`); // Redirect to project detail page
-    } catch (error) {
-      console.error('Error updating project:', error);
-      // Optionally, show an error message to the user
-    }
-  };
-
-  return (
-    <div>
-      <h2>Update Project</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Project Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={projectData.name}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={projectData.description}
-            onChange={handleInputChange}
-          ></textarea>
-        </div>
-        {/* Add other fields as necessary */}
-        <button type="submit">Update Project</button>
-      </form>
-    </div>
-  );
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="form-group">
+                <label htmlFor="name">Name:</label>
+                <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="form-control"
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="id">Project ID:</label>
+                <input
+                    id="id"
+                    name="id"
+                    type="text"
+                    value={formData.id}
+                    className="form-control"
+                    readOnly
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="description">Description:</label>
+                <input
+                    id="description"
+                    name="description"
+                    type="text"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="form-control"
+                />
+            </div>
+            <button type="submit" className="btn btn-primary mt-3">Update Project</button>
+        </form>
+    );
 };
 
 export default UpdateProject;

@@ -1,7 +1,6 @@
-import React from "react";
 import ProjectList from "../components/projectlist";
 
-const ProjectPage: React.Fc = () => {
+const ProjectPage = () => {
     return (
         <div className="container mt-5">
             <ProjectList />

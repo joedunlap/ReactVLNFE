@@ -61,7 +61,12 @@ const CreateSample: React.FC = () => {
     try {
       const response: AxiosResponse<CreatedSample> = await axios.post(
         `http://localhost:3000/api/v1/projects/${projectId}/samples`,
-        sampleData
+        sampleData,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
       setCreatedSample(response.data);
       setOpenModal(true);
@@ -110,12 +115,10 @@ const CreateSample: React.FC = () => {
           />
         </div>
         <FieldSelector onChange={handleCustomFieldChange} reset={resetFields} onResetComplete={handleResetComplete} />
-        <button className="btn btn-primary" type="submit">Create Sample</button>
-        <button className="btn btn-secondary">
-          <Link to={`/projects/${projectId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-            Back to Current Project
-          </Link>
-        </button>
+        <button className="btn btn-primary m-4" type="submit">Create Sample</button>
+        <Link to={`/projects/${projectId}`} className="btn btn-secondary m-4">
+          Back to Current Project
+        </Link>
       </form>
 
       {/* Modal for success/error message */}
