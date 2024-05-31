@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import DeleteProjectButton from './deleteprojectbtn';
+import UpdateProject from './updateproject';
 interface Project {
   id: string;
   name: string;
@@ -55,7 +56,7 @@ const ProjectList: React.FC = () => {
               <td>{formatDate(project.createdAt)}</td>
               <td>
                 <DeleteProjectButton projectId={project.id} projectName={project.name} onDelete={handleDelete} />
-              </td>
+                <Link to={`/projects/${project.id}/update-sample`} className="btn btn-secondary">Update</Link>              </td>
             </tr>
           ))}
         </tbody>

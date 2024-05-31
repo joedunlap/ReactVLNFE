@@ -8,6 +8,7 @@ import ProjectDetail from './components/projectdetail';
 import CreateProject from "./components/newprojectform";
 import Home from "./pages/home";
 import CreateSample from "./components/createsampleform";
+import UpdateProject from "./components/updateproject";
 
 
 
@@ -22,6 +23,8 @@ function App() {
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/projects/new" element={<CreateProject />} />
           <Route path="/projects/:id/create-sample" element={<CreateSample />} />
+          <Route path="/projects/:id/update-sample" element={<UpdateProject />} />
+
         </Routes>
       </div>
     </Router>
