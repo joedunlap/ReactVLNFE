@@ -2,6 +2,8 @@ import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import FieldSelector from './fieldselector/fieldselector';
+import { Modal, Box, Typography, Button } from '@mui/material';
+
 // Define interfaces
 interface SampleData {
   name: string;
@@ -28,9 +30,9 @@ const CreateSample: React.FC = () => {
   });
 
   const [resetFields, setResetFields] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [openModal, setOpenModal] = useState(false);
   const [createdSample, setCreatedSample] = useState<CreatedSample | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -62,7 +64,7 @@ const CreateSample: React.FC = () => {
         sampleData
       );
       setCreatedSample(response.data);
-      setSuccessMessage('Sample created successfully!');
+      setOpenModal(true);
       setErrorMessage('');
       setSampleData({
         name: '',
@@ -73,8 +75,12 @@ const CreateSample: React.FC = () => {
     } catch (err) {
       console.error('Error creating sample:', err);
       setErrorMessage('Failed to create sample. Please try again.');
-      setSuccessMessage('');
+      setOpenModal(true);
     }
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   return (
@@ -112,18 +118,52 @@ const CreateSample: React.FC = () => {
         </button>
       </form>
 
-      {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
-      {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
-
-      {createdSample && (
-        <div className="created-sample">
-          <h2>Sample Details</h2>
-          <p><strong>Name:</strong> {createdSample.name}</p>
-          <p><strong>Description:</strong> {createdSample.description}</p>
-          <p><strong>UUID:</strong> {createdSample.id}</p>
-          <p><strong>Created At:</strong> {createdSample.createdAt}</p>
-        </div>
-      )}
+      {/* Modal for success/error message */}
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 1
+        }}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            {errorMessage ? 'Error :(' : 'Success!'}
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {errorMessage ? (
+              <div className="alert alert-danger">{errorMessage}</div>
+            ) : (
+              <div>
+                <Box sx={{ bgcolor: '#d4edda', p: 2, borderRadius: 1, mb: 2 }}>
+                  <Typography sx={{ color: '#155724' }}>Sample was successfully created!</Typography>
+                </Box>
+                <p><strong>Name:</strong> {createdSample?.name}</p>
+                <p><strong>Description:</strong> {createdSample?.description}</p>
+                <p><strong>UUID:</strong> {createdSample?.id}</p>
+                <p><strong>Created At:</strong> {createdSample?.createdAt}</p>
+              </div>
+            )}
+          </Typography>
+          <Button
+            variant="contained"
+            color={errorMessage ? 'error' : 'success'}
+            onClick={handleCloseModal}
+            sx={{ mt: 2 }}
+          >
+            Close
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 };
