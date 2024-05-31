@@ -1,0 +1,9 @@
+/* styles.css or your existing CSS file */
+.form-check:hover {
+    background-color: #f8f9fa; /* Light grey background on hover */
+    border-radius: 5px; /* Optional: To make the hover effect more noticeable */
+  }
+  
+  .form-check-input:checked + .form-check-label {
+    font-weight: bold; /* Optional: Bold label when checkbox is checked */
+  }

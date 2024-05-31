@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import FieldSelector from './fieldselector';
+import FieldSelector from './fieldselector/fieldselector';
 // Define interfaces
 interface SampleData {
   name: string;
