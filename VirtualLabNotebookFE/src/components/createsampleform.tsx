@@ -1,12 +1,12 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-
+import FieldSelector from './fieldselector';
 // Define interfaces
 interface SampleData {
   name: string;
   description: string;
-  customFields: { [key: string]: { value: string } };
+  customFields: { [key: string]: string };
 }
 
 interface CreatedSample extends SampleData {
@@ -18,11 +18,8 @@ const CreateSample: React.FC = () => {
   const location = useLocation();
   const { id: projectId } = useParams<{ id: string }>();
 
-  console.log('Location Object:', location);
   const state = location.state as { projectName?: string } || {};
   const projectName = state.projectName || 'Default Project Name';
-
-  console.log('Received State in CreateSample:', { projectName, projectId });
 
   const [sampleData, setSampleData] = useState<SampleData>({
     name: '',
@@ -30,6 +27,7 @@ const CreateSample: React.FC = () => {
     customFields: {}
   });
 
+  const [resetFields, setResetFields] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [createdSample, setCreatedSample] = useState<CreatedSample | null>(null);
@@ -42,15 +40,18 @@ const CreateSample: React.FC = () => {
     }));
   };
 
-  const handleCustomFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleCustomFieldChange = (name: string, value: string) => {
     setSampleData((prev) => ({
       ...prev,
       customFields: {
         ...prev.customFields,
-        [name]: { value }
+        [name]: value
       }
     }));
+  };
+
+  const handleResetComplete = () => {
+    setResetFields(false);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -60,7 +61,6 @@ const CreateSample: React.FC = () => {
         `http://localhost:3000/api/v1/projects/${projectId}/samples`,
         sampleData
       );
-      console.log('Sample created:', response.data);
       setCreatedSample(response.data);
       setSuccessMessage('Sample created successfully!');
       setErrorMessage('');
@@ -69,6 +69,7 @@ const CreateSample: React.FC = () => {
         description: '',
         customFields: {}
       });
+      setResetFields(true);
     } catch (err) {
       console.error('Error creating sample:', err);
       setErrorMessage('Failed to create sample. Please try again.');
@@ -102,24 +103,7 @@ const CreateSample: React.FC = () => {
             onChange={handleInputChange}
           />
         </div>
-        <div>
-          <label>Custom Fields:</label>
-          <input
-            className="form-control mb-2"
-            type="text"
-            name="weight"
-            placeholder="Weight"
-            onChange={handleCustomFieldChange}
-          />
-          <input
-            className="form-control mb-2"
-            type="text"
-            name="dilution"
-            placeholder="Dilution"
-            onChange={handleCustomFieldChange}
-          />
-          {/* Add more custom fields as needed */}
-        </div>
+        <FieldSelector onChange={handleCustomFieldChange} reset={resetFields} onResetComplete={handleResetComplete} />
         <button className="btn btn-primary" type="submit">Create Sample</button>
         <button className="btn btn-secondary">
           <Link to={`/projects/${projectId}`} style={{ textDecoration: 'none', color: 'inherit' }}>

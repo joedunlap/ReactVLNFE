@@ -51,6 +51,7 @@ const ProjectDetail: React.FC = () => {
                   <th>ID</th>
                   <th>Name</th>
                   <th>Description</th>
+                  <th>Date Recorded</th>
                 </tr>
               </thead>
               <tbody>
@@ -59,6 +60,8 @@ const ProjectDetail: React.FC = () => {
                     <td>{sample.id}</td>
                     <td>{sample.name}</td>
                     <td>{sample.description}</td>
+                    <td>{sample.createdAt}</td>
+
                   </tr>
                 ))}
               </tbody>
