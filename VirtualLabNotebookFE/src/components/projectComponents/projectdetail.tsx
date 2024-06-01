@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
+import DeleteSampleButton from '../sampleComponents/deletesample';
 
 interface Project {
   id: string;
@@ -10,6 +11,7 @@ interface Project {
 }
 
 interface Sample {
+  createdAt: ReactNode;
   id: string;
   name: string;
   description: string;
@@ -21,6 +23,11 @@ const ProjectDetail: React.FC = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [samples, setSamples] = useState<Sample[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const handleDelete = (sampleId: string) => {
+    setSamples((prevSamples) => prevSamples.filter(sample => sample.id !== sampleId));
+};
+
 
   useEffect(() => {
     // Fetch project details
@@ -52,6 +59,7 @@ const ProjectDetail: React.FC = () => {
                   <th>Name</th>
                   <th>Description</th>
                   <th>Date Recorded</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -61,6 +69,7 @@ const ProjectDetail: React.FC = () => {
                     <td>{sample.name}</td>
                     <td>{sample.description}</td>
                     <td>{sample.createdAt}</td>
+                    <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={''} projectName={''} />
 
                   </tr>
                 ))}
