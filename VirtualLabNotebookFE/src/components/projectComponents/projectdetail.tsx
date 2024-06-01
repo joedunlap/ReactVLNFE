@@ -10,6 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
+import { Collapse } from '@mui/material';
 
 interface Project {
   id: string;
@@ -24,6 +25,7 @@ interface Sample {
   description: string;
   projectId: string;
   createdAt: string;
+  customFields?: { [key: string]: string }; // Add custom fields as an optional property
 }
 
 const ProjectDetail: React.FC = () => {
@@ -32,6 +34,7 @@ const ProjectDetail: React.FC = () => {
   const [samples, setSamples] = useState<Sample[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [selectedSample, setSelectedSample] = useState<Sample | null>(null);
+  const [expandedSampleId, setExpandedSampleId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
   const handleDelete = (sampleId: string) => {
@@ -56,6 +59,10 @@ const ProjectDetail: React.FC = () => {
     );
     setSelectedSample(null);
     setOpen(false);
+  };
+
+  const toggleExpandSample = (sampleId: string) => {
+    setExpandedSampleId(expandedSampleId === sampleId ? null : sampleId);
   };
 
   useEffect(() => {
@@ -93,18 +100,42 @@ const ProjectDetail: React.FC = () => {
               </thead>
               <tbody>
                 {samples.map(sample => (
-                  <tr key={sample.id}>
-                    <td>{sample.id}</td>
-                    <td>{sample.name}</td>
-                    <td>{sample.description}</td>
-                    <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
-                    <td>
-                      <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
-                      <IconButton onClick={() => handleEditClick(sample)} aria-label="edit">
-                        <EditIcon />
-                      </IconButton>
-                    </td>
-                  </tr>
+                  <React.Fragment key={sample.id}>
+                    <tr onClick={() => toggleExpandSample(sample.id)} style={{ cursor: 'pointer' }}>
+                      <td>{sample.id}</td>
+                      <td>{sample.name}</td>
+                      <td>{sample.description}</td>
+                      <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
+                        <IconButton onClick={(e) => { e.stopPropagation(); handleEditClick(sample); }} aria-label="edit">
+                          <EditIcon />
+                        </IconButton>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colSpan={5}>
+                        <Collapse in={expandedSampleId === sample.id} timeout="auto" unmountOnExit>
+                          <div className="p-3">
+                            <p><strong>ID:</strong> {sample.id}</p>
+                            <p><strong>Name:</strong> {sample.name}</p>
+                            <p><strong>Description:</strong> {sample.description}</p>
+                            <p><strong>Date Recorded:</strong> {new Date(sample.createdAt).toLocaleDateString()}</p>
+                            {sample.customFields && (
+                              <>
+                                <h5>Custom Fields</h5>
+                                <ul>
+                                  {Object.entries(sample.customFields).map(([key, value]) => (
+                                    <li key={key}><strong>{key}:</strong> {value}</li>
+                                  ))}
+                                </ul>
+                              </>
+                            )}
+                          </div>
+                        </Collapse>
+                      </td>
+                    </tr>
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
