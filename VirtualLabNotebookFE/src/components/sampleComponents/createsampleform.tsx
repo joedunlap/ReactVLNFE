@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import FieldSelector from './fieldselector/fieldselector';
+import FieldSelector from '../fieldselector/fieldselector';
 import { Modal, Box, Typography, Button } from '@mui/material';
 
 // Define interfaces
@@ -150,10 +150,10 @@ const CreateSample: React.FC = () => {
                 <Box sx={{ bgcolor: '#d4edda', p: 2, borderRadius: 1, mb: 2 }}>
                   <Typography sx={{ color: '#155724' }}>Sample was successfully created!</Typography>
                 </Box>
-                <p><strong>Name:</strong> {createdSample?.name}</p>
-                <p><strong>Description:</strong> {createdSample?.description}</p>
-                <p><strong>UUID:</strong> {createdSample?.id}</p>
-                <p><strong>Created At:</strong> {createdSample?.createdAt}</p>
+                <div><strong>Name:</strong> {createdSample?.name}</div>
+                <div><strong>Description:</strong> {createdSample?.description}</div>
+                <div><strong>UUID:</strong> {createdSample?.id}</div>
+                <div><strong>Created At:</strong> {createdSample?.createdAt}</div>
               </div>
             )}
           </Typography>

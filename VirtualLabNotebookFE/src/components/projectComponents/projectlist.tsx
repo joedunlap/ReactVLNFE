@@ -82,7 +82,8 @@ const ProjectList: React.FC = () => {
                     ))}
                 </tbody>
             </table>
-            <Link to="/projects/new" className="btn btn-primary">Create a New Project</Link>
+            <Link to="/projects/new" className="btn btn-primary m-4">Create a New Project</Link>
+            <Link to="/" className="btn btn-secondary m-4">Back to Homepage</Link>
             {selectedProject && (
                 <div className="mt-5">
                     <h3>Update Project</h3>

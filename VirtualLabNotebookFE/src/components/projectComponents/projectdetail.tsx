@@ -74,10 +74,11 @@ const ProjectDetail: React.FC = () => {
           <Link 
   to={`/projects/${id}/create-sample`}
   state={{ projectName: project.name, projectId: project.id }}
-  className="btn btn-primary"
+  className="btn btn-primary m-4"
 >
   Create Sample
 </Link>
+<Link to="/projects" className='btn btn-secondary m-4'>Go Back to List of Projects</Link>
         </>
       ) : (
         <p>Loading project details...</p>

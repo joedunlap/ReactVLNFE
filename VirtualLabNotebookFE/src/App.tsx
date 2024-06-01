@@ -4,11 +4,11 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/navbar';
 import ProjectPage from './pages/projectpage';
-import ProjectDetail from './components/projectdetail';
-import CreateProject from "./components/newprojectform";
+import ProjectDetail from './components/projectComponents/projectdetail';
+import CreateProject from "./components/projectComponents/newprojectform";
 import Home from "./pages/home";
-import CreateSample from "./components/createsampleform";
-import UpdateProject from "./components/updateproject";
+import CreateSample from "./components/sampleComponents/createsampleform";
+import UpdateProject from "./components/projectComponents/updateproject";
 
 
 
