@@ -3,7 +3,13 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import DeleteProjectButton from './deleteprojectbtn';
 import UpdateProject from './updateproject';
-
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import Button from '@mui/material/Button';
 
 interface Project {
     id: string;
@@ -15,6 +21,7 @@ interface Project {
 const ProjectList: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:3000/api/v1/projects')
@@ -37,10 +44,12 @@ const ProjectList: React.FC = () => {
 
     const handleEditClick = (project: Project) => {
         setSelectedProject(project);
+        setOpen(true);
     };
 
     const handleCancelEdit = () => {
         setSelectedProject(null);
+        setOpen(false);
     };
 
     const handleUpdate = (updatedProject: Project) => {
@@ -50,6 +59,7 @@ const ProjectList: React.FC = () => {
             )
         );
         setSelectedProject(null);
+        setOpen(false);
     };
 
     return (
@@ -76,7 +86,9 @@ const ProjectList: React.FC = () => {
                             <td>{formatDate(project.createdAt)}</td>
                             <td>
                                 <DeleteProjectButton projectId={project.id} projectName={project.name} onDelete={handleDelete} />
-                                <button onClick={() => handleEditClick(project)} className="btn btn-secondary">Update</button>
+                                <IconButton onClick={() => handleEditClick(project)} aria-label="edit">
+                                    <EditIcon />
+                                </IconButton>
                             </td>
                         </tr>
                     ))}
@@ -84,13 +96,17 @@ const ProjectList: React.FC = () => {
             </table>
             <Link to="/projects/new" className="btn btn-primary m-4">Create a New Project</Link>
             <Link to="/" className="btn btn-secondary m-4">Back to Homepage</Link>
-            {selectedProject && (
-                <div className="mt-5">
-                    <h3>Update Project</h3>
-                    <UpdateProject project={selectedProject} onUpdate={handleUpdate} />
-                    <button onClick={handleCancelEdit} className="btn btn-secondary mt-3">Cancel</button>
-                </div>
-            )}
+            <Dialog open={open} onClose={handleCancelEdit} aria-labelledby="form-dialog-title" maxWidth="md" fullWidth>
+                <DialogTitle id="form-dialog-title">Update Project</DialogTitle>
+                <DialogContent>
+                    {selectedProject && <UpdateProject project={selectedProject} onUpdate={handleUpdate} />}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelEdit} color="secondary">
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };
