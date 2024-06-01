@@ -11,6 +11,9 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import { Collapse } from '@mui/material';
+import { CSVLink } from 'react-csv';
+import { saveAs } from 'file-saver';
+import Papa from 'papaparse';
 
 interface Project {
   id: string;
@@ -76,6 +79,52 @@ const ProjectDetail: React.FC = () => {
       .then(response => setSamples(response.data))
       .catch(error => setErrorMessage('Error fetching samples'));
   }, [id]);
+
+  const exportToCSV = () => {
+    if (!project) return;
+
+    // Create headers for the CSV
+    const headers = ["Project ID", "Project Name", "Project Description", "Project Created At"];
+    const sampleHeaders = ["Sample ID", "Sample Name", "Sample Description", "Sample Created At"];
+    const customFieldHeaders = new Set<string>();
+
+    // Flatten project and sample data
+    const data: any[] = samples.map(sample => {
+      const flattenedSample = {
+        "Project ID": project.id,
+        "Project Name": project.name,
+        "Project Description": project.description,
+        "Project Created At": new Date(project.createdAt).toLocaleDateString(),
+        "Sample ID": sample.id,
+        "Sample Name": sample.name,
+        "Sample Description": sample.description,
+        "Sample Created At": new Date(sample.createdAt).toLocaleDateString()
+      };
+      
+      // Add custom fields to the flattened data and headers
+      if (sample.customFields) {
+        Object.entries(sample.customFields).forEach(([key, value]) => {
+          flattenedSample[key] = value;
+          customFieldHeaders.add(key);
+        });
+      }
+
+      return flattenedSample;
+    });
+
+    // Combine headers
+    const combinedHeaders = [...headers, ...sampleHeaders, ...Array.from(customFieldHeaders)];
+
+    // Convert data to CSV
+    const csv = Papa.unparse({
+      fields: combinedHeaders,
+      data
+    });
+
+    // Save CSV file
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, `project_${project.id}_samples.csv`);
+  };
 
   return (
     <div className="container mt-5">
@@ -143,6 +192,9 @@ const ProjectDetail: React.FC = () => {
             <p>No samples found for this project.</p>
           )}
           
+          <Button onClick={exportToCSV} variant="contained" color="primary" className="m-4">
+            Export to CSV
+          </Button>
           <Link 
             to={`/projects/${id}/create-sample`}
             state={{ projectName: project.name, projectId: project.id }}
