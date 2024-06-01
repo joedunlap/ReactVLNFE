@@ -69,7 +69,7 @@ const ProjectDetail: React.FC = () => {
                     <td>{sample.name}</td>
                     <td>{sample.description}</td>
                     <td>{sample.createdAt}</td>
-                    <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={''} projectName={''} />
+                    <td><DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={''} projectName={''} /></td>
 
                   </tr>
                 ))}

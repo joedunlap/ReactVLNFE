@@ -15,7 +15,7 @@ interface DeleteButtonProps {
 const DeleteSampleButton: React.FC<DeleteButtonProps> = ({ projectId, onDelete, sampleId, sampleName }) => {
     const { id } = useParams<{ id: string }>();
 
-  const deleteProject = async () => {
+  const deleteSample = async () => {
     const userConfirmed = window.confirm(`Are you sure you want to delete ${sampleName} (ID: ${sampleId})`);
     if (!userConfirmed) return;
 
@@ -31,7 +31,7 @@ const DeleteSampleButton: React.FC<DeleteButtonProps> = ({ projectId, onDelete, 
   };
 
   return (
-    <IconButton aria-label="delete" onClick={deleteProject} color="warning">
+    <IconButton aria-label="delete" onClick={deleteSample} color="warning">
       <DeleteIcon />
     </IconButton>
   );
