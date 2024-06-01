@@ -2,6 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import DeleteSampleButton from '../sampleComponents/deletesample';
+import UpdateSample from '../sampleComponents/updatesample';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import Button from '@mui/material/Button';
 
 interface Project {
   id: string;
@@ -11,11 +19,11 @@ interface Project {
 }
 
 interface Sample {
-  createdAt: ReactNode;
   id: string;
   name: string;
   description: string;
   projectId: string;
+  createdAt: string;
 }
 
 const ProjectDetail: React.FC = () => {
@@ -23,11 +31,32 @@ const ProjectDetail: React.FC = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [samples, setSamples] = useState<Sample[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [selectedSample, setSelectedSample] = useState<Sample | null>(null);
+  const [open, setOpen] = useState(false);
 
   const handleDelete = (sampleId: string) => {
     setSamples((prevSamples) => prevSamples.filter(sample => sample.id !== sampleId));
-};
+  };
 
+  const handleEditClick = (sample: Sample) => {
+    setSelectedSample(sample);
+    setOpen(true);
+  };
+
+  const handleCancelEdit = () => {
+    setSelectedSample(null);
+    setOpen(false);
+  };
+
+  const handleUpdate = (updatedSample: Sample) => {
+    setSamples((prevSamples) => 
+      prevSamples.map(sample => 
+        sample.id === updatedSample.id ? updatedSample : sample
+      )
+    );
+    setSelectedSample(null);
+    setOpen(false);
+  };
 
   useEffect(() => {
     // Fetch project details
@@ -68,9 +97,13 @@ const ProjectDetail: React.FC = () => {
                     <td>{sample.id}</td>
                     <td>{sample.name}</td>
                     <td>{sample.description}</td>
-                    <td>{sample.createdAt}</td>
-                    <td><DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={''} projectName={''} /></td>
-
+                    <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
+                      <IconButton onClick={() => handleEditClick(sample)} aria-label="edit">
+                        <EditIcon />
+                      </IconButton>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -79,19 +112,29 @@ const ProjectDetail: React.FC = () => {
             <p>No samples found for this project.</p>
           )}
           
-          {console.log('Link State:', { projectName: project.name, projectId: project.id })}
           <Link 
-  to={`/projects/${id}/create-sample`}
-  state={{ projectName: project.name, projectId: project.id }}
-  className="btn btn-primary m-4"
->
-  Create Sample
-</Link>
-<Link to="/projects" className='btn btn-secondary m-4'>Go Back to List of Projects</Link>
+            to={`/projects/${id}/create-sample`}
+            state={{ projectName: project.name, projectId: project.id }}
+            className="btn btn-primary m-4"
+          >
+            Create Sample
+          </Link>
+          <Link to="/projects" className='btn btn-secondary m-4'>Go Back to List of Projects</Link>
         </>
       ) : (
         <p>Loading project details...</p>
       )}
+      <Dialog open={open} onClose={handleCancelEdit} aria-labelledby="form-dialog-title" maxWidth="md" fullWidth>
+        <DialogTitle id="form-dialog-title">Update Sample</DialogTitle>
+        <DialogContent>
+          {selectedSample && <UpdateSample sample={selectedSample} onUpdate={handleUpdate} />}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelEdit} color="secondary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
