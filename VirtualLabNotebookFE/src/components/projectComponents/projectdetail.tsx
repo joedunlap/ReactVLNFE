@@ -10,9 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
-import { Collapse } from '@mui/material';
-import { saveAs } from 'file-saver';
-import Papa from 'papaparse';
+import ExportToCSVButton from '../exporttocsvbutton';
 
 interface Project {
   id: string;
@@ -27,7 +25,7 @@ interface Sample {
   description: string;
   projectId: string;
   createdAt: string;
-  customFields?: { [key: string]: string }; // Add custom fields as an optional property
+  customFields?: { [key: string]: string };
 }
 
 const ProjectDetail: React.FC = () => {
@@ -36,7 +34,6 @@ const ProjectDetail: React.FC = () => {
   const [samples, setSamples] = useState<Sample[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [selectedSample, setSelectedSample] = useState<Sample | null>(null);
-  const [expandedSampleId, setExpandedSampleId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
   const handleDelete = (sampleId: string) => {
@@ -63,10 +60,6 @@ const ProjectDetail: React.FC = () => {
     setOpen(false);
   };
 
-  const toggleExpandSample = (sampleId: string) => {
-    setExpandedSampleId(expandedSampleId === sampleId ? null : sampleId);
-  };
-
   useEffect(() => {
     // Fetch project details
     axios.get(`http://localhost:3000/api/v1/projects/${id}`)
@@ -78,52 +71,6 @@ const ProjectDetail: React.FC = () => {
       .then(response => setSamples(response.data))
       .catch(error => setErrorMessage('Error fetching samples'));
   }, [id]);
-
-  const exportToCSV = () => {
-    if (!project) return;
-
-    // Create headers for the CSV
-    const headers = ["Project ID", "Project Name", "Project Description", "Project Created At"];
-    const sampleHeaders = ["Sample ID", "Sample Name", "Sample Description", "Sample Created At"];
-    const customFieldHeaders = new Set<string>();
-
-    // Flatten project and sample data
-    const data: any[] = samples.map(sample => {
-      const flattenedSample = {
-        "Project ID": project.id,
-        "Project Name": project.name,
-        "Project Description": project.description,
-        "Project Created At": new Date(project.createdAt).toLocaleDateString(),
-        "Sample ID": sample.id,
-        "Sample Name": sample.name,
-        "Sample Description": sample.description,
-        "Sample Created At": new Date(sample.createdAt).toLocaleDateString()
-      };
-      
-      // Add custom fields to the flattened data and headers
-      if (sample.customFields) {
-        Object.entries(sample.customFields).forEach(([key, value]) => {
-          flattenedSample[key] = value;
-          customFieldHeaders.add(key);
-        });
-      }
-
-      return flattenedSample;
-    });
-
-    // Combine headers
-    const combinedHeaders = [...headers, ...sampleHeaders, ...Array.from(customFieldHeaders)];
-
-    // Convert data to CSV
-    const csv = Papa.unparse({
-      fields: combinedHeaders,
-      data
-    });
-
-    // Save CSV file
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, `project_${project.id}_samples.csv`);
-  };
 
   return (
     <div className="container mt-5">
@@ -148,42 +95,22 @@ const ProjectDetail: React.FC = () => {
               </thead>
               <tbody>
                 {samples.map(sample => (
-                  <React.Fragment key={sample.id}>
-                    <tr onClick={() => toggleExpandSample(sample.id)} style={{ cursor: 'pointer' }}>
-                      <td>{sample.id}</td>
-                      <td>{sample.name}</td>
-                      <td>{sample.description}</td>
-                      <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
-                      <td>
-                        <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
-                        <IconButton onClick={(e) => { e.stopPropagation(); handleEditClick(sample); }} aria-label="edit">
-                          <EditIcon />
-                        </IconButton>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colSpan={5}>
-                        <Collapse in={expandedSampleId === sample.id} timeout="auto" unmountOnExit>
-                          <div className="p-3">
-                            <p><strong>ID:</strong> {sample.id}</p>
-                            <p><strong>Name:</strong> {sample.name}</p>
-                            <p><strong>Description:</strong> {sample.description}</p>
-                            <p><strong>Date Recorded:</strong> {new Date(sample.createdAt).toLocaleDateString()}</p>
-                            {sample.customFields && (
-                              <>
-                                <h5>Custom Fields</h5>
-                                <ul>
-                                  {Object.entries(sample.customFields).map(([key, value]) => (
-                                    <li key={key}><strong>{key}:</strong> {value}</li>
-                                  ))}
-                                </ul>
-                              </>
-                            )}
-                          </div>
-                        </Collapse>
-                      </td>
-                    </tr>
-                  </React.Fragment>
+                  <tr key={sample.id}>
+                    <td>{sample.id}</td>
+                    <td>
+                      <Link to={`/projects/${id}/samples/${sample.id}`} state={{ sample }}>
+                        {sample.name}
+                      </Link>
+                    </td>
+                    <td>{sample.description}</td>
+                    <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
+                      <IconButton onClick={() => handleEditClick(sample)} aria-label="edit">
+                        <EditIcon />
+                      </IconButton>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -191,9 +118,7 @@ const ProjectDetail: React.FC = () => {
             <p>No samples found for this project.</p>
           )}
           
-          <Button onClick={exportToCSV} variant="contained" color="violet" className="m-4">
-            Export to CSV
-          </Button>
+          <ExportToCSVButton project={project} samples={samples} />
           <Link 
             to={`/projects/${id}/create-sample`}
             state={{ projectName: project.name, projectId: project.id }}

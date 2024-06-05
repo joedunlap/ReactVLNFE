@@ -11,6 +11,7 @@ import CreateSample from "./components/sampleComponents/createsampleform";
 import UpdateProject from "./components/projectComponents/updateproject";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./components/themes";
+import SampleDetail from "./components/sampleComponents/sampledetails";
 
 
 
@@ -27,6 +28,9 @@ function App() {
           <Route path="/projects/new" element={<CreateProject />} />
           <Route path="/projects/:id/create-sample" element={<CreateSample />} />
           <Route path="/projects/:id/update-sample" element={<UpdateProject />} />
+          <Route path="/projects/:projectId/samples/:sampleId" element={<SampleDetail />} />
+
+      
 
         </Routes>
       </div>
