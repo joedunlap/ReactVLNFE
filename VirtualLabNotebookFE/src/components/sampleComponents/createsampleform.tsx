@@ -159,7 +159,7 @@ const CreateSample: React.FC = () => {
           </Typography>
           <Button
             variant="contained"
-            color={errorMessage ? 'error' : 'success'}
+            color={errorMessage ? 'error' : 'violet'}
             onClick={handleCloseModal}
             sx={{ mt: 2 }}
           >
