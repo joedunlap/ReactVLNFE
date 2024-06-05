@@ -11,7 +11,6 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import { Collapse } from '@mui/material';
-import { CSVLink } from 'react-csv';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 
@@ -192,7 +191,7 @@ const ProjectDetail: React.FC = () => {
             <p>No samples found for this project.</p>
           )}
           
-          <Button onClick={exportToCSV} variant="contained" color="primary" className="m-4">
+          <Button onClick={exportToCSV} variant="contained" color="violet" className="m-4">
             Export to CSV
           </Button>
           <Link 

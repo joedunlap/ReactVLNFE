@@ -9,11 +9,14 @@ import CreateProject from "./components/projectComponents/newprojectform";
 import Home from "./pages/home";
 import CreateSample from "./components/sampleComponents/createsampleform";
 import UpdateProject from "./components/projectComponents/updateproject";
+import { ThemeProvider } from "@emotion/react";
+import theme from "./components/themes";
 
 
 
 function App() {
   return (
+    <ThemeProvider theme={theme}>
     <Router>
       <Navbar />
       <div className="container mt-5">
@@ -28,6 +31,7 @@ function App() {
         </Routes>
       </div>
     </Router>
+    </ThemeProvider>
   );
 };
 
