@@ -8,7 +8,7 @@ const Home = () => {
       <h1>Welcome to the Virtual Lab Notebook</h1>
       <p>This is the home page of your application.</p>
       <Link to="/projects" className="btn btn-primary m-4">View Your Projects</Link>
-      <Link to="/projects/new" className="btn btn-secondary m-4">Create a New Project</Link>
+      <Link to="/projects/new" className="btn btn-success m-4">Create a New Project</Link>
       
     </div>
   );
