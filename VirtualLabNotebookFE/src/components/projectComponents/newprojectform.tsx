@@ -59,7 +59,7 @@ const CreateProject = () => {
                 <div className="projectname">
                     <input className="form-control mb-2" type="text" placeholder="Project Name" onChange={handleFormChange} value={projectData.name} name="name" />
                     <textarea className="form-control mb-2" placeholder="Optional Description of Project. Note: UUID and timestamp will be created once submit button is clicked." onChange={handleFormChange} value={projectData.description} name="description" />
-                    <button className="btn btn-primary m-1" type="submit">Submit</button>
+                    <button className="btn btn-success m-1" type="submit">Submit</button>
                     <Link to="/projects" className="btn btn-secondary m-1">Back to Projects</Link>
                 </div>
             </form>
@@ -102,7 +102,7 @@ const CreateProject = () => {
                     </Typography>
                     <Button
                         variant="contained"
-                        color={errorMessage ? 'error' : 'success'}
+                        color={errorMessage ? 'error' : 'violet'}
                         onClick={handleCloseModal}
                         sx={{ mt: 2 }}
                     >
