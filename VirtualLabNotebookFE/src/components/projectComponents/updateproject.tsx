@@ -15,21 +15,20 @@ interface UpdateProjectProps {
 
 const UpdateProject: React.FC<UpdateProjectProps> = ({ project, onUpdate }) => {
     const [formData, setFormData] = useState({
-        name: '',
-        description: '',
-        id: ''
+        name: project.name,
+        description: project.description,
+        id: project.id
     });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
-        if (project) {
-            setFormData({
-                name: project.name,
-                description: project.description,
-                id: project.id
-            });
-        }
+        setFormData({
+            name: project.name,
+            description: project.description,
+            id: project.id
+        });
     }, [project]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,18 +49,23 @@ const UpdateProject: React.FC<UpdateProjectProps> = ({ project, onUpdate }) => {
                 }
             });
             onUpdate(response.data); // Call the onUpdate handler with the updated project
+            setSuccessMessage('Project updated successfully!');
+            setErrorMessage(null);
             setLoading(false);
         } catch (err) {
             setError(err.message);
+            setErrorMessage('Failed to update project. Please try again.');
+            setSuccessMessage(null);
             setLoading(false);
         }
     };
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    if (errorMessage) return <p>Error: {errorMessage}</p>;
 
     return (
         <form onSubmit={handleSubmit}>
+            {successMessage && <div className="alert alert-success">{successMessage}</div>}
             <div className="form-group">
                 <label htmlFor="name">Name:</label>
                 <input

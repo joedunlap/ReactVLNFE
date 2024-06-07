@@ -22,6 +22,8 @@ const ProjectList: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [open, setOpen] = useState(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         axios.get('http://localhost:3000/api/v1/projects')
@@ -59,7 +61,11 @@ const ProjectList: React.FC = () => {
             )
         );
         setSelectedProject(null);
-        setOpen(false);
+        setSuccessMessage('Project Updated Succesfully!')
+        setErrorMessage('')
+        setTimeout(() => { 
+            setOpen(false);
+        }, 5000);
     };
 
     return (
