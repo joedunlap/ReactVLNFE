@@ -6,7 +6,7 @@ interface Sample {
     name: string;
     description: string;
     projectId: string;
-    // Add any other fields specific to your samples
+    customFields?: { [key: string]: string };
 }
 
 interface UpdateSampleProps {
@@ -19,28 +19,40 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
         name: '',
         description: '',
         id: '',
-        projectId: ''
+        projectId: '',
+        customFields: {}
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     useEffect(() => {
-        if (sample) {
-            setFormData({
-                name: sample.name,
-                description: sample.description,
-                id: sample.id,
-                projectId: sample.projectId
-            });
-        }
+        setFormData({
+            name: sample.name,
+            description: sample.description,
+            id: sample.id,
+            projectId: sample.projectId,
+            customFields: sample.customFields || {}
+        });
     }, [sample]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setFormData(prevData => ({
-            ...prevData,
-            [name]: value
-        }));
+        if (name.startsWith('customFields.')) {
+            const fieldName = name.split('.')[1];
+            setFormData(prevData => ({
+                ...prevData,
+                customFields: {
+                    ...prevData.customFields,
+                    [fieldName]: value
+                }
+            }));
+        } else {
+            setFormData(prevData => ({
+                ...prevData,
+                [name]: value
+            }));
+        }
     };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -52,8 +64,13 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
                     'Content-Type': 'application/json'
                 }
             });
-            onUpdate(response.data); // Call the onUpdate handler with the updated sample
+            onUpdate(response.data);
+            setSuccessMessage("Sample updated successfully!");
+            console.log('success message set')
             setLoading(false);
+            setTimeout(() => {
+                console.log('clearing success message')
+            setSuccessMessage(null); }, 5000);   // Automatically clear the message after 5 seconds
         } catch (err) {
             setError(err.message);
             setLoading(false);
@@ -65,50 +82,21 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
 
     return (
         <form onSubmit={handleSubmit}>
+            {successMessage && <div className="alert alert-success">Sample was succesfully updated!</div>}
             <div className="form-group">
                 <label htmlFor="name">Name:</label>
-                <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="form-control"
-                />
+                <input id="name" name="name" type="text" value={formData.name} onChange={handleChange} className="form-control" />
             </div>
             <div className="form-group">
                 <label htmlFor="description">Description:</label>
-                <input
-                    id="description"
-                    name="description"
-                    type="text"
-                    value={formData.description}
-                    onChange={handleChange}
-                    className="form-control"
-                />
+                <input id="description" name="description" type="text" value={formData.description} onChange={handleChange} className="form-control" />
             </div>
-            <div className="form-group">
-                <label htmlFor="id">Sample ID:</label>
-                <input
-                    id="id"
-                    name="id"
-                    type="text"
-                    value={formData.id}
-                    className="form-control"
-                    readOnly
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="projectId">Project ID:</label>
-                <input
-                    id="projectId"
-                    name="projectId"
-                    type="text"
-                    value={formData.projectId}
-                    className="form-control"
-                    readOnly
-                />
-            </div>
+            {Object.entries(formData.customFields).map(([key, value]) => (
+                <div className="form-group" key={key}>
+                    <label htmlFor={`customFields.${key}`}>{key}:</label>
+                    <input id={`customFields.${key}`} name={`customFields.${key}`} type="text" value={value} onChange={handleChange} className="form-control" />
+                </div>
+            ))}
             <button type="submit" className="btn btn-primary mt-3">Update Sample</button>
         </form>
     );
