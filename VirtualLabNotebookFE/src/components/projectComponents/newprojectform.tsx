@@ -6,6 +6,9 @@ import { Modal, Box, Typography, Button } from '@mui/material';
 interface ProjectData {
     name: string;
     description: string;
+    category: string;
+    groupAffiliation: string;
+    priorityLevel: string;
 }
 
 interface CreatedProject extends ProjectData {
@@ -16,14 +19,17 @@ interface CreatedProject extends ProjectData {
 const CreateProject = () => {
     const [projectData, setProjectData] = useState<ProjectData>({
         name: '',
-        description: ''
+        description: '',
+        category: '',
+        groupAffiliation: '',
+        priorityLevel: ''
     });
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [createdProject, setCreatedProject] = useState<CreatedProject | null>(null);
     const [openModal, setOpenModal] = useState(false);
 
-    const handleFormChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleFormChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setProjectData(prevState => ({
             ...prevState, [name]: value
@@ -38,7 +44,7 @@ const CreateProject = () => {
             setCreatedProject(response.data);
             setSuccessMessage('Project created successfully!');
             setErrorMessage('');
-            setProjectData({ name: '', description: '' });
+            setProjectData({ name: '', description: '', category: '', groupAffiliation: '', priorityLevel: '' });
             setOpenModal(true);
         } catch (err) {
             console.log('Failed to create new project', err);
@@ -55,12 +61,39 @@ const CreateProject = () => {
     return (
         <div>
             <h1 className="title">Create a New Project</h1>
+            <br></br>
+            <br></br>
+            <hr></hr>
             <form onSubmit={handleFormSubmit} className="container">
                 <div className="projectname">
                     <input className="form-control mb-2" type="text" placeholder="Project Name" onChange={handleFormChange} value={projectData.name} name="name" />
                     <textarea className="form-control mb-2" placeholder="Optional Description of Project. Note: UUID and timestamp will be created once submit button is clicked." onChange={handleFormChange} value={projectData.description} name="description" />
-                    <button className="btn btn-success m-1" type="submit">Submit</button>
-                    <Link to="/projects" className="btn btn-secondary m-1">Back to Projects</Link>
+                    <select className="form-select mb-2" aria-label="Default select example" onChange={handleFormChange} value={projectData.category} name="category">
+                        <option value="" disabled selected>Please Choose a Project Category</option>
+                        <option value="General Biology">General Biology</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Microbiology">Microbiology</option>
+                        <option value="Botany">Botany</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input className="form-control mb-2" type="text" placeholder="Group/Lab Affiliation" onChange={handleFormChange} value={projectData.groupAffiliation} name="groupAffiliation" />
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" id="radio" value="Low" onChange={handleFormChange} name="priorityLevel" />
+                        <label className="form-check-label" htmlFor="inlineCheckbox1">Low Priority</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" id="inlineradio2" value="Medium" onChange={handleFormChange} name="priorityLevel" />
+                        <label className="form-check-label" htmlFor="inlineCheckbox2">Medium Priority</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" id="inlineradio3" value="High" onChange={handleFormChange} name="priorityLevel" />
+                        <label className="form-check-label" htmlFor="inlineCheckbox3">High Priority</label>
+                    </div>
+                    <br></br>
+                    <hr></hr>
+                    <button className="btn btn-success m-4" type="submit">Submit</button>
+                    <Link to="/projects" className="btn btn-secondary m-4">Back to Projects</Link>
                 </div>
             </form>
 
@@ -102,7 +135,7 @@ const CreateProject = () => {
                     </Typography>
                     <Button
                         variant="contained"
-                        color={errorMessage ? 'error' : 'violet'}
+                        color={errorMessage ? 'error' : 'primary'}
                         onClick={handleCloseModal}
                         sx={{ mt: 2 }}
                     >
@@ -110,8 +143,6 @@ const CreateProject = () => {
                     </Button>
                 </Box>
             </Modal>
-
-            
         </div>
     );
 };

@@ -12,6 +12,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 
 interface Project {
+    priorityLevel: ReactNode;
+    groupAffiliation: ReactNode;
+    category: ReactNode;
     id: string;
     name: string;
     description: string;
@@ -74,10 +77,13 @@ const ProjectList: React.FC = () => {
             <table className="table table-striped">
                 <thead>
                     <tr>
-                        <th>Project ID</th>
+                        <th>Project UUID</th>
                         <th>Name</th>
-                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Group Affiliation</th>
+                        <th>Priority Level</th>
                         <th>Created At</th>
+                        <th>Description</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -88,8 +94,12 @@ const ProjectList: React.FC = () => {
                             <td>
                                 <Link to={`/projects/${project.id}`}>{project.name}</Link>
                             </td>
-                            <td>{project.description}</td>
+                            <td>{project.category}</td>
+                            <td>{project.groupAffiliation}</td>
+                            <td>{project.priorityLevel}</td>
                             <td>{formatDate(project.createdAt)}</td>
+                            <td>{project.description}</td>
+
                             <td>
                                 <DeleteProjectButton projectId={project.id} projectName={project.name} onDelete={handleDelete} />
                                 <IconButton onClick={() => handleEditClick(project)} aria-label="edit">
