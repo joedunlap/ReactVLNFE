@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import DeleteSampleButton from '../sampleComponents/deletesample';
@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import ExportToCSVButton from '../exporttocsvbutton';
-import './projects.css'
+import './projects.css';
 
 interface Project {
   id: string;
@@ -24,15 +24,15 @@ interface Project {
 }
 
 interface Sample {
-  groupAffiliation: ReactNode;
-  priorityLevel: string;
-  category: ReactNode;
   id: string;
   name: string;
   description: string;
   projectId: string;
   createdAt: string;
   customFields?: { [key: string]: string };
+  priorityLevel: string;
+  groupAffiliation: string;
+  category: string;
 }
 
 const ProjectDetail: React.FC = () => {
@@ -42,6 +42,7 @@ const ProjectDetail: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [selectedSample, setSelectedSample] = useState<Sample | null>(null);
   const [open, setOpen] = useState(false);
+  const [showCustomFields, setShowCustomFields] = useState<{ [key: string]: boolean }>({});
 
   const handleDelete = (sampleId: string) => {
     setSamples((prevSamples) => prevSamples.filter(sample => sample.id !== sampleId));
@@ -67,6 +68,13 @@ const ProjectDetail: React.FC = () => {
     setOpen(false);
   };
 
+  const handleRowClick = (sampleId: string) => {
+    setShowCustomFields(prevState => ({
+      ...prevState,
+      [sampleId]: !prevState[sampleId]
+    }));
+  };
+
   useEffect(() => {
     // Fetch project details
     axios.get(`http://localhost:3000/api/v1/projects/${id}`)
@@ -90,7 +98,7 @@ const ProjectDetail: React.FC = () => {
         default:
             return '';
     }
-};
+  };
 
   return (
     <div className="container mt-5">
@@ -98,14 +106,14 @@ const ProjectDetail: React.FC = () => {
       {project ? (
         <>
           <div className="container-fluid mb-4">
-          <h2 id="samplesHeader" className={getPriorityClass(project.priorityLevel)}>
-                                {project.name}'s Samples</h2>
-          
+            <h2 id="samplesHeader" className={getPriorityClass(project.priorityLevel)}>
+              {project.name}'s Samples
+            </h2>
           </div>
           
           {samples.length > 0 ? (
             <table id="projects" className="table table-hover">
-            <thead>
+              <thead>
                 <tr>
                   <th className="tableHead">Sample UUID:</th>
                   <th className="tableHead">Name:</th>
@@ -119,27 +127,38 @@ const ProjectDetail: React.FC = () => {
               </thead>
               <tbody>
                 {samples.map(sample => (
-                  <tr key={sample.id}>
-                    <td>{sample.id}</td>
-                    <td>
-                      <Link to={`/projects/${id}/samples/${sample.id}`} state={{ sample }}>
-                        {sample.name}
-                      </Link>
-                    </td>
-                    <td>{sample.category}</td>
-                    <td>{sample.groupAffiliation}</td>
-                    <td className={getPriorityClass(sample.priorityLevel)}>
-                                {sample.priorityLevel}
-                            </td>
-                    <td>{sample.description}</td>
-                    <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
-                    <td>
-                      <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
-                      <IconButton onClick={() => handleEditClick(sample)} aria-label="edit">
-                        <EditIcon />
-                      </IconButton>
-                    </td>
-                  </tr>
+                  <React.Fragment key={sample.id}>
+                    <tr className="sample-row" onClick={() => handleRowClick(sample.id)}>
+                      <td>{sample.id}</td>
+                      <td>
+                        <Link to={`/projects/${id}/samples/${sample.id}`} state={{ sample }}>
+                          {sample.name}
+                        </Link>
+                      </td>
+                      <td>{sample.category}</td>
+                      <td>{sample.groupAffiliation}</td>
+                      <td className={getPriorityClass(sample.priorityLevel)}>
+                        {sample.priorityLevel}
+                      </td>
+                      <td>{sample.description}</td>
+                      <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
+                        <IconButton onClick={() => handleEditClick(sample)} aria-label="edit">
+                          <EditIcon />
+                        </IconButton>
+                      </td>
+                    </tr>
+                    {showCustomFields[sample.id] && (
+                      <tr className="custom-fields">
+                        <td colSpan={8}>
+                          {sample.customFields && Object.entries(sample.customFields).map(([key, value]) => (
+                            <div key={key}><strong>{key}:</strong> {value}</div>
+                          ))}
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>

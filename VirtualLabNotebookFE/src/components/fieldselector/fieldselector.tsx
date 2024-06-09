@@ -57,7 +57,7 @@ const FieldSelector: React.FC<FieldSelectorProps> = ({ onChange, reset, onResetC
       <div className="form-check">
         <input type="checkbox" className="form-check-input" id="weight" name="weight" checked={checkboxState.weight} onChange={handleCheckboxChange} />
         <label className="form-check-label" htmlFor="weight">
-          Weight
+          Weight (g)
         </label>
       </div>
       <div className="form-check">
@@ -81,7 +81,7 @@ const FieldSelector: React.FC<FieldSelectorProps> = ({ onChange, reset, onResetC
       <div className="form-check">
         <input type="checkbox" className="form-check-input" id="volume" name="volume" checked={checkboxState.volume} onChange={handleCheckboxChange} />
         <label className="form-check-label" htmlFor="volume">
-          Volume
+          Volume (ml)
         </label>
       </div>
       <div className="form-check">
@@ -100,7 +100,7 @@ const FieldSelector: React.FC<FieldSelectorProps> = ({ onChange, reset, onResetC
 
       {selectedFields.includes('weight') && (
         <div className="mb-3">
-          <label htmlFor="weightInput">Weight:</label>
+          <label htmlFor="weightInput">Weight (g):</label>
           <input className="form-control" type="text" id="weightInput" name="weight" onChange={handleInputChange} />
         </div>
       )}
@@ -124,7 +124,7 @@ const FieldSelector: React.FC<FieldSelectorProps> = ({ onChange, reset, onResetC
       )}
       {selectedFields.includes('volume') && (
         <div className="mb-3">
-          <label htmlFor="volumeInput">Volume:</label>
+          <label htmlFor="volumeInput">Volume (ml):</label>
           <input className="form-control" type="text" id="volumeInput" name="volume" onChange={handleInputChange} />
         </div>
       )}
