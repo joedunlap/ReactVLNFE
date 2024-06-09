@@ -14,9 +14,9 @@ import Alert from '@mui/material/Alert';
 import './projects.css';
 
 interface Project {
-    priorityLevel: ReactNode;
-    groupAffiliation: ReactNode;
-    category: ReactNode;
+    priorityLevel: string;
+    groupAffiliation: string;
+    category: string;
     id: string;
     name: string;
     description: string;
@@ -88,6 +88,19 @@ const ProjectList: React.FC = () => {
         setErrorMessage(null);
     };
 
+    const getPriorityClass = (priorityLevel: string) => {
+        switch (priorityLevel) {
+            case 'High':
+                return 'priority-high';
+            case 'Medium':
+                return 'priority-medium';
+            case 'Low':
+                return 'priority-low';
+            default:
+                return '';
+        }
+    };
+
     return (
         <div className='container mt-5'>
             <h2>Projects</h2>
@@ -97,17 +110,17 @@ const ProjectList: React.FC = () => {
                 </Alert>
             )}
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-            <table className="table table-striped">
+            <table id="projects" className="table table-hover">
                 <thead>
                     <tr>
-                        <th>Project UUID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Group Affiliation</th>
-                        <th>Priority Level</th>
-                        <th>Created At</th>
-                        <th>Description</th>
-                        <th>Actions</th>
+                        <th className="tableHead">Project UUID</th>
+                        <th className="tableHead">Name</th>
+                        <th className="tableHead">Category</th>
+                        <th className="tableHead">Group Affiliation</th>
+                        <th className="tableHead">Priority Level</th>
+                        <th className="tableHead">Created At</th>
+                        <th className="tableHead">Description</th>
+                        <th className="tableHead">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,7 +132,9 @@ const ProjectList: React.FC = () => {
                             </td>
                             <td>{project.category}</td>
                             <td>{project.groupAffiliation}</td>
-                            <td>{project.priorityLevel}</td>
+                            <td className={getPriorityClass(project.priorityLevel)}>
+                                {project.priorityLevel}
+                            </td>
                             <td>{formatDate(project.createdAt)}</td>
                             <td>{project.description}</td>
                             <td>
