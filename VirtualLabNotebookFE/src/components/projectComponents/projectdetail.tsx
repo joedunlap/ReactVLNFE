@@ -17,6 +17,9 @@ interface Project {
   name: string;
   description: string;
   createdAt: string;
+  category: string;
+  groupAffiliation: string;
+  priorityLevel: string;
 }
 
 interface Sample {
@@ -51,8 +54,8 @@ const ProjectDetail: React.FC = () => {
   };
 
   const handleUpdate = (updatedSample: Sample) => {
-    setSamples((prevSamples) => 
-      prevSamples.map(sample => 
+    setSamples((prevSamples) =>
+      prevSamples.map(sample =>
         sample.id === updatedSample.id ? updatedSample : sample
       )
     );
@@ -80,11 +83,14 @@ const ProjectDetail: React.FC = () => {
           <h2>{project.name}</h2>
           <p>{project.description}</p>
           <p><strong>Created At:</strong> {new Date(project.createdAt).toLocaleDateString()}</p>
+          <p><strong>Category:</strong> {project.category}</p>
+          <p><strong>Group Affiliation:</strong> {project.groupAffiliation}</p>
+          <p><strong>Priority Level:</strong> {project.priorityLevel}</p>
           
           <h3>Samples</h3>
           {samples.length > 0 ? (
-            <table className="table table-striped">
-              <thead>
+            <table id="projectTable" className="table table-striped">
+              <thead className="tableHead">
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
@@ -121,7 +127,13 @@ const ProjectDetail: React.FC = () => {
           <ExportToCSVButton project={project} samples={samples} />
           <Link 
             to={`/projects/${id}/create-sample`}
-            state={{ projectName: project.name, projectId: project.id }}
+            state={{ 
+              projectName: project.name, 
+              projectId: project.id,
+              category: project.category,
+              groupAffiliation: project.groupAffiliation,
+              priorityLevel: project.priorityLevel
+            }}
             className="btn btn-primary m-4"
           >
             Create Sample

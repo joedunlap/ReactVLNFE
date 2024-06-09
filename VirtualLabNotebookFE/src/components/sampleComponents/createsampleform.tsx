@@ -9,6 +9,9 @@ interface SampleData {
   name: string;
   description: string;
   customFields: { [key: string]: string };
+  category: string;
+  groupAffiliation: string;
+  priorityLevel: string;
 }
 
 interface CreatedSample extends SampleData {
@@ -20,13 +23,25 @@ const CreateSample: React.FC = () => {
   const location = useLocation();
   const { id: projectId } = useParams<{ id: string }>();
 
-  const state = location.state as { projectName?: string } || {};
+  const state = location.state as { 
+    projectName?: string;
+    category?: string;
+    groupAffiliation?: string;
+    priorityLevel?: string;
+  } || {};
+
   const projectName = state.projectName || 'Default Project Name';
+  const category = state.category || '';
+  const groupAffiliation = state.groupAffiliation || '';
+  const priorityLevel = state.priorityLevel || '';
 
   const [sampleData, setSampleData] = useState<SampleData>({
     name: '',
     description: '',
-    customFields: {}
+    customFields: {},
+    category,
+    groupAffiliation,
+    priorityLevel
   });
 
   const [resetFields, setResetFields] = useState(false);
@@ -74,7 +89,10 @@ const CreateSample: React.FC = () => {
       setSampleData({
         name: '',
         description: '',
-        customFields: {}
+        customFields: {},
+        category,
+        groupAffiliation,
+        priorityLevel
       });
       setResetFields(true);
     } catch (err) {
@@ -115,6 +133,36 @@ const CreateSample: React.FC = () => {
           />
         </div>
         <FieldSelector onChange={handleCustomFieldChange} reset={resetFields} onResetComplete={handleResetComplete} />
+        <div>
+          <label>Category:</label>
+          <input
+            className="form-control mb-2"
+            type="text"
+            name="category"
+            value={sampleData.category}
+            readOnly
+          />
+        </div>
+        <div>
+          <label>Group Affiliation:</label>
+          <input
+            className="form-control mb-2"
+            type="text"
+            name="groupAffiliation"
+            value={sampleData.groupAffiliation}
+            readOnly
+          />
+        </div>
+        <div>
+          <label>Priority Level:</label>
+          <input
+            className="form-control mb-2"
+            type="text"
+            name="priorityLevel"
+            value={sampleData.priorityLevel}
+            readOnly
+          />
+        </div>
         <button className="btn btn-primary m-4" type="submit">Create Sample</button>
         <Link to={`/projects/${projectId}`} className="btn btn-secondary m-4">
           Back to Current Project
