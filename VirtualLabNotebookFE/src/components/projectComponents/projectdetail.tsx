@@ -10,6 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
 import ExportToCSVButton from '../exporttocsvbutton';
 import './projects.css';
 
@@ -42,6 +43,8 @@ const ProjectDetail: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [selectedSample, setSelectedSample] = useState<Sample | null>(null);
   const [open, setOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [fade, setFade] = useState(false);
   const [showCustomFields, setShowCustomFields] = useState<{ [key: string]: boolean }>({});
 
   const handleDelete = (sampleId: string) => {
@@ -58,6 +61,19 @@ const ProjectDetail: React.FC = () => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    if (successMessage) {
+        const timer = setTimeout(() => {
+            setFade(true);
+            setTimeout(() => {
+                setSuccessMessage(null);
+                setFade(false);
+            }, 1000); // Duration of the fade-out animation
+        }, 3000); // Show the message for 3 seconds
+        return () => clearTimeout(timer);
+    }
+}, [successMessage]);
+
   const handleUpdate = (updatedSample: Sample) => {
     setSamples((prevSamples) =>
       prevSamples.map(sample =>
@@ -66,6 +82,7 @@ const ProjectDetail: React.FC = () => {
     );
     setSelectedSample(null);
     setOpen(false);
+    setSuccessMessage('Project updated successfully!');
   };
 
   const handleRowClick = (sampleId: string) => {
@@ -105,6 +122,12 @@ const ProjectDetail: React.FC = () => {
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       {project ? (
         <>
+        {successMessage && (
+                <Alert severity="success" className={fade ? 'fade-out' : ''}>
+                    {successMessage}
+                </Alert>
+            )}
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
           <div className="container-fluid mb-4">
             <h2 id="samplesHeader" className={getPriorityClass(project.priorityLevel)}>
               {project.name}'s Samples

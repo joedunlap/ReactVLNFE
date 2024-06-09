@@ -7,6 +7,9 @@ interface Sample {
     description: string;
     projectId: string;
     customFields?: { [key: string]: string };
+    priorityLevel: string;
+    category: string;
+    groupAffiliation: string;
 }
 
 interface UpdateSampleProps {
@@ -20,7 +23,10 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
         description: '',
         id: '',
         projectId: '',
-        customFields: {}
+        customFields: {},
+        priorityLevel: '',
+        category: '',
+        groupAffiliation: ''
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -32,11 +38,14 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
             description: sample.description,
             id: sample.id,
             projectId: sample.projectId,
-            customFields: sample.customFields || {}
+            customFields: sample.customFields || {},
+            priorityLevel: sample.priorityLevel,
+            category: sample.category,
+            groupAffiliation: sample.groupAffiliation
         });
     }, [sample]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = event.target;
         if (name.startsWith('customFields.')) {
             const fieldName = name.split('.')[1];
@@ -66,11 +75,10 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
             });
             onUpdate(response.data);
             setSuccessMessage("Sample updated successfully!");
-            console.log('success message set')
             setLoading(false);
             setTimeout(() => {
-                console.log('clearing success message')
-            setSuccessMessage(null); }, 5000);   // Automatically clear the message after 5 seconds
+                setSuccessMessage(null); 
+            }, 5000);   // Automatically clear the message after 5 seconds
         } catch (err) {
             setError(err.message);
             setLoading(false);
@@ -82,7 +90,7 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            {successMessage && <div className="alert alert-success">Sample was succesfully updated!</div>}
+            {successMessage && <div className="alert alert-success">Sample was successfully updated!</div>}
             <div className="form-group">
                 <label htmlFor="name">Name:</label>
                 <input id="name" name="name" type="text" value={formData.name} onChange={handleChange} className="form-control" />
@@ -90,6 +98,22 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
             <div className="form-group">
                 <label htmlFor="description">Description:</label>
                 <input id="description" name="description" type="text" value={formData.description} onChange={handleChange} className="form-control" />
+            </div>
+            <div className="form-group">
+                <label htmlFor="priorityLevel">Priority Level:</label>
+                <select id="priorityLevel" name="priorityLevel" value={formData.priorityLevel} onChange={handleChange} className="form-control">
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <div className="form-group">
+                <label htmlFor="category">Category:</label>
+                <input id="category" name="category" type="text" value={formData.category} readOnly className="form-control" />
+            </div>
+            <div className="form-group">
+                <label htmlFor="groupAffiliation">Group Affiliation:</label>
+                <input id="groupAffiliation" name="groupAffiliation" type="text" value={formData.groupAffiliation} readOnly className="form-control" />
             </div>
             {Object.entries(formData.customFields).map(([key, value]) => (
                 <div className="form-group" key={key}>
