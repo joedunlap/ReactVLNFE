@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import ExportToCSVButton from '../exporttocsvbutton';
+import './projects.css'
 
 interface Project {
   id: string;
@@ -23,6 +24,9 @@ interface Project {
 }
 
 interface Sample {
+  groupAffiliation: ReactNode;
+  priorityLevel: string;
+  category: ReactNode;
   id: string;
   name: string;
   description: string;
@@ -75,28 +79,42 @@ const ProjectDetail: React.FC = () => {
       .catch(error => setErrorMessage('Error fetching samples'));
   }, [id]);
 
+  const getPriorityClass = (priorityLevel: string) => {
+    switch (priorityLevel) {
+        case 'High':
+            return 'priority-high';
+        case 'Medium':
+            return 'priority-medium';
+        case 'Low':
+            return 'priority-low';
+        default:
+            return '';
+    }
+};
+
   return (
     <div className="container mt-5">
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       {project ? (
         <>
-          <h2>{project.name}</h2>
-          <p>{project.description}</p>
-          <p><strong>Created At:</strong> {new Date(project.createdAt).toLocaleDateString()}</p>
-          <p><strong>Category:</strong> {project.category}</p>
-          <p><strong>Group Affiliation:</strong> {project.groupAffiliation}</p>
-          <p><strong>Priority Level:</strong> {project.priorityLevel}</p>
+          <div className="container-fluid mb-4">
+          <h2 id="samplesHeader" className={getPriorityClass(project.priorityLevel)}>
+                                {project.name}'s Samples</h2>
           
-          <h3>Samples</h3>
+          </div>
+          
           {samples.length > 0 ? (
-            <table id="projectTable" className="table table-striped">
-              <thead className="tableHead">
+            <table id="projects" className="table table-hover">
+            <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Date Recorded</th>
-                  <th>Actions</th>
+                  <th className="tableHead">Sample UUID:</th>
+                  <th className="tableHead">Name:</th>
+                  <th className="tableHead">Category:</th>
+                  <th className="tableHead">Group Affiliation:</th>
+                  <th className="tableHead">Priority Level:</th>
+                  <th className="tableHead">Description:</th>
+                  <th className="tableHead">Date Recorded:</th>
+                  <th className="tableHead">Actions:</th>
                 </tr>
               </thead>
               <tbody>
@@ -108,6 +126,11 @@ const ProjectDetail: React.FC = () => {
                         {sample.name}
                       </Link>
                     </td>
+                    <td>{sample.category}</td>
+                    <td>{sample.groupAffiliation}</td>
+                    <td className={getPriorityClass(sample.priorityLevel)}>
+                                {sample.priorityLevel}
+                            </td>
                     <td>{sample.description}</td>
                     <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
                     <td>

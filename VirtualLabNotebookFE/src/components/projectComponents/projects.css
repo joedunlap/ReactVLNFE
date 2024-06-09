@@ -11,6 +11,13 @@
     
 }
 
+#samplesHeader {
+    font-size: 2em;
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+    text-decoration: underline rgba(7, 29, 101, 0.826);
+}
+
 #projects .priority-high {
     color: red;
 }
@@ -20,6 +27,18 @@
 }
 
 #projects .priority-low {
+    color: green;
+}
+
+.priority-high {
+    color: red;
+}
+
+.priority-medium {
+    color: orange;
+}
+
+.priority-low {
     color: green;
 }
 

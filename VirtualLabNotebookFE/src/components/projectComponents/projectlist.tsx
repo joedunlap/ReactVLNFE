@@ -110,7 +110,7 @@ const ProjectList: React.FC = () => {
                 </Alert>
             )}
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-            <table id="projects" className="table table-hover table-">
+            <table id="projects" className="table table-hover table">
                 <thead>
                     <tr>
                         <th className="tableHead">Project UUID</th>
