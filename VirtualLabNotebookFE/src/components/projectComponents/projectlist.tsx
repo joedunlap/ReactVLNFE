@@ -103,14 +103,14 @@ const ProjectList: React.FC = () => {
 
     return (
         <div className='container mt-5'>
-            <h2>Projects</h2>
+            <div className="container mb-5"><h2 id="projectsHeader">Projects</h2></div>
             {successMessage && (
                 <Alert severity="success" className={fade ? 'fade-out' : ''}>
                     {successMessage}
                 </Alert>
             )}
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-            <table id="projects" className="table table-hover">
+            <table id="projects" className="table table-hover table-">
                 <thead>
                     <tr>
                         <th className="tableHead">Project UUID</th>
