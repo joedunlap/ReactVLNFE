@@ -1,0 +1,14 @@
+/* Define the keyframes for the fade-out effect */
+@keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  
+  /* Apply the animation to elements with the fade-out class */
+  .fade-out {
+    animation: fadeOut 1s forwards;
+  }

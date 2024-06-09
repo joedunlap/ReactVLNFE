@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import DeleteProjectButton from './deleteprojectbtn';
@@ -10,6 +10,8 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import './projects.css';
 
 interface Project {
     priorityLevel: ReactNode;
@@ -27,12 +29,29 @@ const ProjectList: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [fade, setFade] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:3000/api/v1/projects')
             .then(response => setProjects(response.data))
-            .catch(error => console.error('Error fetching projects:', error));
+            .catch(error => {
+                console.error('Error fetching projects:', error);
+                setErrorMessage('Error fetching projects');
+            });
     }, []);
+
+    useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => {
+                setFade(true);
+                setTimeout(() => {
+                    setSuccessMessage(null);
+                    setFade(false);
+                }, 1000); // Duration of the fade-out animation
+            }, 3000); // Show the message for 3 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [successMessage]);
 
     const formatDate = (dateString: string) => {
         const options: Intl.DateTimeFormatOptions = {
@@ -64,16 +83,20 @@ const ProjectList: React.FC = () => {
             )
         );
         setSelectedProject(null);
-        setSuccessMessage('Project Updated Succesfully!')
-        setErrorMessage('')
-        setTimeout(() => { 
-            setOpen(false);
-        }, 5000);
+        setOpen(false);
+        setSuccessMessage('Project updated successfully!');
+        setErrorMessage(null);
     };
 
     return (
         <div className='container mt-5'>
             <h2>Projects</h2>
+            {successMessage && (
+                <Alert severity="success" className={fade ? 'fade-out' : ''}>
+                    {successMessage}
+                </Alert>
+            )}
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             <table className="table table-striped">
                 <thead>
                     <tr>
@@ -99,7 +122,6 @@ const ProjectList: React.FC = () => {
                             <td>{project.priorityLevel}</td>
                             <td>{formatDate(project.createdAt)}</td>
                             <td>{project.description}</td>
-
                             <td>
                                 <DeleteProjectButton projectId={project.id} projectName={project.name} onDelete={handleDelete} />
                                 <IconButton onClick={() => handleEditClick(project)} aria-label="edit">
