@@ -12,6 +12,7 @@ import UpdateProject from "./components/projectComponents/updateproject";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./components/themes";
 import SampleDetail from "./components/sampleComponents/sampledetails";
+import TechStack from "./pages/techstack";
 
 
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/projects/:id/create-sample" element={<CreateSample />} />
           <Route path="/projects/:id/update-sample" element={<UpdateProject />} />
           <Route path="/projects/:projectId/samples/:sampleId" element={<SampleDetail />} />
+          <Route path="/tech-stack" element={<TechStack />} />
 
       
 

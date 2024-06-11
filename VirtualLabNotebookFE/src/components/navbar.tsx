@@ -34,6 +34,11 @@ const Navbar = () => {
                         <li className="nav-item">
                             <Link className="nav-link" to="/projects/new">Create New Project</Link>
                         </li>
+                        <li className='nav-item'>
+                            <Link className="nav-link" to="/tech-stack">Tech Stack</Link>
+                        </li>
+                
+                        
                     </ul>
                     <span className="navbar-text ms-auto">
                         Current Time: {currentTime.toLocaleTimeString()}

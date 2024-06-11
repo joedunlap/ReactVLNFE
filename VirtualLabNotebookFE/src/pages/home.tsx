@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import flask from '../assets/images/flasknobg.png'
-import './home.css'
+import './pages.css'
 const Home = () => {
   return (
     <div className="container-fluid">

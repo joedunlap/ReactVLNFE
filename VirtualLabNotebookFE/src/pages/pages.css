@@ -1,0 +1,41 @@
+.flask {
+    width: 500px;
+    height: auto;
+}
+
+.tech-stack {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .tech-item {
+    width: 200px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .tech-logo {
+    width: 100px;
+    height: 100px;
+  }
+  
+  h2 {
+    font-size: 1.5em;
+    margin: 10px 0;
+  }
+  
+  p {
+    font-size: 1em;
+    color: #555;
+  }
