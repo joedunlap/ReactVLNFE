@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ReactNode } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import DeleteSampleButton from '../sampleComponents/deletesample';
@@ -44,8 +44,32 @@ const ProjectDetail: React.FC = () => {
   const [selectedSample, setSelectedSample] = useState<Sample | null>(null);
   const [open, setOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [fade, setFade] = useState(false);
-  const [showCustomFields, setShowCustomFields] = useState<{ [key: string]: boolean }>({});
+  const [fade, setFade] = useState(false);
+
+  useEffect(() => {
+    if (successMessage) {
+        const timer = setTimeout(() => {
+            setFade(true);
+            setTimeout(() => {
+                setSuccessMessage(null);
+                setFade(false);
+            }, 1000); // Duration of the fade-out animation
+        }, 3000); // Show the message for 3 seconds
+        return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    // Fetch project details
+    axios.get(`http://localhost:3000/api/v1/projects/${id}`)
+      .then(response => setProject(response.data))
+      .catch(error => setErrorMessage('Error fetching project details'));
+
+    // Fetch samples affiliated with the project
+    axios.get(`http://localhost:3000/api/v1/projects/${id}/samples`)
+      .then(response => setSamples(response.data))
+      .catch(error => setErrorMessage('Error fetching samples'));
+  }, [id]);
 
   const handleDelete = (sampleId: string) => {
     setSamples((prevSamples) => prevSamples.filter(sample => sample.id !== sampleId));
@@ -61,19 +85,6 @@ const ProjectDetail: React.FC = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    if (successMessage) {
-        const timer = setTimeout(() => {
-            setFade(true);
-            setTimeout(() => {
-                setSuccessMessage(null);
-                setFade(false);
-            }, 1000); // Duration of the fade-out animation
-        }, 3000); // Show the message for 3 seconds
-        return () => clearTimeout(timer);
-    }
-}, [successMessage]);
-
   const handleUpdate = (updatedSample: Sample) => {
     setSamples((prevSamples) =>
       prevSamples.map(sample =>
@@ -84,25 +95,6 @@ const ProjectDetail: React.FC = () => {
     setOpen(false);
     setSuccessMessage('Project updated successfully!');
   };
-
-  const handleRowClick = (sampleId: string) => {
-    setShowCustomFields(prevState => ({
-      ...prevState,
-      [sampleId]: !prevState[sampleId]
-    }));
-  };
-
-  useEffect(() => {
-    // Fetch project details
-    axios.get(`http://localhost:3000/api/v1/projects/${id}`)
-      .then(response => setProject(response.data))
-      .catch(error => setErrorMessage('Error fetching project details'));
-
-    // Fetch samples affiliated with the project
-    axios.get(`http://localhost:3000/api/v1/projects/${id}/samples`)
-      .then(response => setSamples(response.data))
-      .catch(error => setErrorMessage('Error fetching samples'));
-  }, [id]);
 
   const getPriorityClass = (priorityLevel: string) => {
     switch (priorityLevel) {
@@ -117,17 +109,31 @@ const ProjectDetail: React.FC = () => {
     }
   };
 
+  // Collect all unique custom fields from the samples
+  const customFieldKeys = Array.from(new Set(samples.flatMap(sample => sample.customFields ? Object.keys(sample.customFields) : [])));
+
+  // Helper function to format header names
+  const formatHeader = (header: string) => {
+    let formattedHeader = header.charAt(0).toUpperCase() + header.slice(1) + ':';
+    if (header === 'weight') {
+      formattedHeader += ' (g)';
+    } else if (header === 'volume') {
+      formattedHeader += ' (ml)';
+    }
+    return formattedHeader;
+  };
+
   return (
     <div className="container mt-5">
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       {project ? (
         <>
-        {successMessage && (
-                <Alert severity="success" className={fade ? 'fade-out' : ''}>
-                    {successMessage}
-                </Alert>
-            )}
-            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+          {successMessage && (
+            <Alert severity="success" className={fade ? 'fade-out' : ''}>
+              {successMessage}
+            </Alert>
+          )}
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
           <div className="container-fluid mb-4">
             <h2 id="samplesHeader" className={getPriorityClass(project.priorityLevel)}>
               {project.name}'s Samples
@@ -145,43 +151,38 @@ const ProjectDetail: React.FC = () => {
                   <th className="tableHead">Priority Level:</th>
                   <th className="tableHead">Description:</th>
                   <th className="tableHead">Date Recorded:</th>
+                  {customFieldKeys.map(key => (
+                    <th className="tableHead" key={key}>{formatHeader(key)}</th>
+                  ))}
                   <th className="tableHead">Actions:</th>
                 </tr>
               </thead>
               <tbody>
                 {samples.map(sample => (
-                  <React.Fragment key={sample.id}>
-                    <tr className="sample-row" onClick={() => handleRowClick(sample.id)}>
-                      <td>{sample.id}</td>
-                      <td>
-                        <Link to={`/projects/${id}/samples/${sample.id}`} state={{ sample }}>
-                          {sample.name}
-                        </Link>
-                      </td>
-                      <td>{sample.category}</td>
-                      <td>{sample.groupAffiliation}</td>
-                      <td className={getPriorityClass(sample.priorityLevel)}>
-                        {sample.priorityLevel}
-                      </td>
-                      <td>{sample.description}</td>
-                      <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
-                      <td>
-                        <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
-                        <IconButton onClick={() => handleEditClick(sample)} aria-label="edit">
-                          <EditIcon />
-                        </IconButton>
-                      </td>
-                    </tr>
-                    {showCustomFields[sample.id] && (
-                      <tr className="custom-fields">
-                        <td colSpan={8}>
-                          {sample.customFields && Object.entries(sample.customFields).map(([key, value]) => (
-                            <div key={key}><strong>{key}:</strong> {value}</div>
-                          ))}
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
+                  <tr key={sample.id}>
+                    <td>{sample.id}</td>
+                    <td>
+                      <Link to={`/projects/${id}/samples/${sample.id}`} state={{ sample }}>
+                        {sample.name}
+                      </Link>
+                    </td>
+                    <td>{sample.category}</td>
+                    <td>{sample.groupAffiliation}</td>
+                    <td className={getPriorityClass(sample.priorityLevel)}>
+                      {sample.priorityLevel}
+                    </td>
+                    <td>{sample.description}</td>
+                    <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
+                    {customFieldKeys.map(key => (
+                      <td key={`${sample.id}-${key}`}>{sample.customFields?.[key] || 'N/A'}</td>
+                    ))}
+                    <td>
+                      <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
+                      <IconButton onClick={() => handleEditClick(sample)} aria-label="edit">
+                        <EditIcon />
+                      </IconButton>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
