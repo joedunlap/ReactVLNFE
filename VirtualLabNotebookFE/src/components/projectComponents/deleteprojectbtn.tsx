@@ -24,10 +24,8 @@ const DeleteProjectButton: React.FC<DeleteButtonProps> = ({ projectId, projectNa
     try {
       await axios.delete(`http://localhost:3000/api/v1/projects/${projectId}`);
       onDelete(projectId);
-      alert('Project deleted successfully');
     } catch (err) {
       console.error('Error deleting project:', err);
-      alert('Failed to delete project. Please try again.');
     } finally {
       handleClose();
     }

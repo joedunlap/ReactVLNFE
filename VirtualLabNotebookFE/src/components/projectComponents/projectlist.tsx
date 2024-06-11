@@ -64,6 +64,8 @@ const ProjectList: React.FC = () => {
 
     const handleDelete = (projectId: string) => {
         setProjects((prevProjects) => prevProjects.filter(project => project.id !== projectId));
+        setSuccessMessage('Project deleted successfully!');
+        setErrorMessage(null)
     };
 
     const handleEditClick = (project: Project) => {
