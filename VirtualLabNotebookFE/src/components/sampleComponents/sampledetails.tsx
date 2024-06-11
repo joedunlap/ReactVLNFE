@@ -74,7 +74,9 @@ const SampleDetail: React.FC = () => {
             <>
               <h5>Custom Fields</h5>
               {Object.entries(sample.customFields).map(([key, value]) => (
-                <p key={key}><strong>{key}:</strong> {value}</p>
+                <p key={key}>
+                  <strong>{key}:</strong> {value} {key === 'weight' ? '(g)' : key === 'volume' ? '(ml)' : ''}
+                </p>
               ))}
             </>
           )}
