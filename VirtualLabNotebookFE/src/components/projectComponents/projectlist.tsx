@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ReactNode } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import DeleteProjectButton from './deleteprojectbtn';
@@ -30,6 +30,8 @@ const ProjectList: React.FC = () => {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [fade, setFade] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const projectsPerPage = 5;
 
     useEffect(() => {
         axios.get('http://localhost:3000/api/v1/projects')
@@ -103,6 +105,17 @@ const ProjectList: React.FC = () => {
         }
     };
 
+    // Calculate the projects to display for the current page
+    const indexOfLastProject = currentPage * projectsPerPage;
+    const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+    const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(projects.length / projectsPerPage);
+
+    // Handle pagination
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
     return (
         <div className='container mt-5'>
             <div className="container mb-5"><h2 id="projectsHeader">Projects</h2></div>
@@ -126,7 +139,7 @@ const ProjectList: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {projects.map(project => (
+                    {currentProjects.map(project => (
                         <tr key={project.id}>
                             <td>{project.id}</td>
                             <td>
@@ -149,6 +162,17 @@ const ProjectList: React.FC = () => {
                     ))}
                 </tbody>
             </table>
+            <nav>
+                <ul className="pagination">
+                  {[...Array(totalPages)].map((_, i) => (
+                    <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                      <button onClick={() => paginate(i + 1)} className="page-link">
+                        {i + 1}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             <Link to="/projects/new" className="btn btn-primary m-4">Create a New Project</Link>
             <Link to="/" className="btn btn-secondary m-4">Back to Homepage</Link>
             <Dialog open={open} onClose={handleCancelEdit} aria-labelledby="form-dialog-title" maxWidth="md" fullWidth>

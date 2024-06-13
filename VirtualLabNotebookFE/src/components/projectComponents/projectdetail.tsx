@@ -45,6 +45,8 @@ const ProjectDetail: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [fade, setFade] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const samplesPerPage = 5;
 
   useEffect(() => {
     if (successMessage) {
@@ -112,16 +114,16 @@ const ProjectDetail: React.FC = () => {
   // Collect all unique custom fields from the samples
   const customFieldKeys = Array.from(new Set(samples.flatMap(sample => sample.customFields ? Object.keys(sample.customFields) : [])));
 
-  // Helper function to format header names
-  const formatHeader = (header: string) => {
-    let formattedHeader = header.charAt(0).toUpperCase() + header.slice(1) + ':';
-    if (header === 'weight') {
-      formattedHeader += ' (g)';
-    } else if (header === 'volume') {
-      formattedHeader += ' (ml)';
-    }
-    return formattedHeader;
-  };
+  // Calculate the samples to display for the current page
+  const indexOfLastSample = currentPage * samplesPerPage;
+  const indexOfFirstSample = indexOfLastSample - samplesPerPage;
+  const currentSamples = samples.slice(indexOfFirstSample, indexOfLastSample);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(samples.length / samplesPerPage);
+
+  // Handle pagination
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <div className="container mt-5">
@@ -141,51 +143,64 @@ const ProjectDetail: React.FC = () => {
           </div>
           
           {samples.length > 0 ? (
-            <table id="projects" className="table table-hover">
-              <thead>
-                <tr>
-                  <th className="tableHead">Sample UUID:</th>
-                  <th className="tableHead">Name:</th>
-                  <th className="tableHead">Category:</th>
-                  <th className="tableHead">Group Affiliation:</th>
-                  <th className="tableHead">Priority Level:</th>
-                  <th className="tableHead">Description:</th>
-                  <th className="tableHead">Date Recorded:</th>
-                  {customFieldKeys.map(key => (
-                    <th className="tableHead" key={key}>{formatHeader(key)}</th>
-                  ))}
-                  <th className="tableHead">Actions:</th>
-                </tr>
-              </thead>
-              <tbody>
-                {samples.map(sample => (
-                  <tr key={sample.id}>
-                    <td>{sample.id}</td>
-                    <td>
-                      <Link to={`/projects/${id}/samples/${sample.id}`} state={{ sample }}>
-                        {sample.name}
-                      </Link>
-                    </td>
-                    <td>{sample.category}</td>
-                    <td>{sample.groupAffiliation}</td>
-                    <td className={getPriorityClass(sample.priorityLevel)}>
-                      {sample.priorityLevel}
-                    </td>
-                    <td>{sample.description}</td>
-                    <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
+            <div>
+              <table id="projects" className="table table-hover">
+                <thead>
+                  <tr>
+                    <th className="tableHead">Sample UUID:</th>
+                    <th className="tableHead">Name:</th>
+                    <th className="tableHead">Category:</th>
+                    <th className="tableHead">Group Affiliation:</th>
+                    <th className="tableHead">Priority Level:</th>
+                    <th className="tableHead">Description:</th>
+                    <th className="tableHead">Date Recorded:</th>
                     {customFieldKeys.map(key => (
-                      <td key={`${sample.id}-${key}`}>{sample.customFields?.[key] || 'N/A'}</td>
+                      <th className="tableHead" key={key}>{key}</th>
                     ))}
-                    <td>
-                      <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
-                      <IconButton onClick={() => handleEditClick(sample)} aria-label="edit">
-                        <EditIcon />
-                      </IconButton>
-                    </td>
+                    <th className="tableHead">Actions:</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {currentSamples.map(sample => (
+                    <tr key={sample.id}>
+                      <td>{sample.id}</td>
+                      <td>
+                        <Link to={`/projects/${id}/samples/${sample.id}`} state={{ sample }}>
+                          {sample.name}
+                        </Link>
+                      </td>
+                      <td>{sample.category}</td>
+                      <td>{sample.groupAffiliation}</td>
+                      <td className={getPriorityClass(sample.priorityLevel)}>
+                        {sample.priorityLevel}
+                      </td>
+                      <td>{sample.description}</td>
+                      <td>{new Date(sample.createdAt).toLocaleDateString()}</td>
+                      {customFieldKeys.map(key => (
+                        <td key={`${sample.id}-${key}`}>{sample.customFields?.[key] || 'N/A'}</td>
+                      ))}
+                      <td>
+                        <DeleteSampleButton sampleId={sample.id} sampleName={sample.name} onDelete={handleDelete} projectId={id!} projectName={project.name} />
+                        <IconButton onClick={() => handleEditClick(sample)} aria-label="edit">
+                          <EditIcon />
+                        </IconButton>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <nav>
+                <ul className="pagination">
+                  {[...Array(totalPages)].map((_, i) => (
+                    <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                      <button onClick={() => paginate(i + 1)} className="page-link">
+                        {i + 1}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
           ) : (
             <p>No samples found for this project.</p>
           )}

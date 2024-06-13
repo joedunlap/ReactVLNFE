@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import FieldSelector from '../fieldselector/fieldselector';
 
 interface Sample {
     id: string;
@@ -28,6 +29,7 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
         category: '',
         groupAffiliation: ''
     });
+    const [resetFields, setResetFields] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -62,6 +64,20 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
                 [name]: value
             }));
         }
+    };
+
+    const handleCustomFieldChange = (name: string, value: string) => {
+        setFormData(prevData => ({
+            ...prevData,
+            customFields: {
+                ...prevData.customFields,
+                [name]: value
+            }
+        }));
+    };
+
+    const handleResetComplete = () => {
+        setResetFields(false);
     };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -121,6 +137,7 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
                     <input id={`customFields.${key}`} name={`customFields.${key}`} type="text" value={value} onChange={handleChange} className="form-control" />
                 </div>
             ))}
+            <FieldSelector onChange={handleCustomFieldChange} reset={resetFields} onResetComplete={handleResetComplete} />
             <button type="submit" className="btn btn-primary mt-3">Update Sample</button>
         </form>
     );
