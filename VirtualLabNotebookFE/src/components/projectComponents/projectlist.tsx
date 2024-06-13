@@ -32,6 +32,7 @@ const ProjectList: React.FC = () => {
     const [fade, setFade] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [sortCriteria, setSortCriteria] = useState(''); // Default no sorting
+    const [searchQuery, setSearchQuery] = useState('');
     const projectsPerPage = 5;
 
     useEffect(() => {
@@ -68,7 +69,7 @@ const ProjectList: React.FC = () => {
     const handleDelete = (projectId: string) => {
         setProjects((prevProjects) => prevProjects.filter(project => project.id !== projectId));
         setSuccessMessage('Project deleted successfully!');
-        setErrorMessage(null)
+        setErrorMessage(null);
     };
 
     const handleEditClick = (project: Project) => {
@@ -82,8 +83,8 @@ const ProjectList: React.FC = () => {
     };
 
     const handleUpdate = (updatedProject: Project) => {
-        setProjects((prevProjects) => 
-            prevProjects.map(project => 
+        setProjects((prevProjects) =>
+            prevProjects.map(project =>
                 project.id === updatedProject.id ? updatedProject : project
             )
         );
@@ -125,13 +126,26 @@ const ProjectList: React.FC = () => {
 
     const sortedProjects = sortCriteria ? sortProjects(projects, sortCriteria) : projects;
 
+    // Filter projects based on search query
+    const filterProjects = (projects: Project[], query: string) => {
+        if (!query) return projects;
+        return projects.filter(project =>
+            project.name.toLowerCase().includes(query.toLowerCase()) ||
+            project.category.toLowerCase().includes(query.toLowerCase()) ||
+            project.groupAffiliation.toLowerCase().includes(query.toLowerCase()) ||
+            project.createdAt.includes(query)
+        );
+    };
+
+    const filteredProjects = filterProjects(sortedProjects, searchQuery);
+
     // Calculate the projects to display for the current page
     const indexOfLastProject = currentPage * projectsPerPage;
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-    const currentProjects = sortedProjects.slice(indexOfFirstProject, indexOfLastProject);
+    const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
 
     // Calculate the total number of pages
-    const totalPages = Math.ceil(projects.length / projectsPerPage);
+    const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
 
     // Handle pagination
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -141,19 +155,31 @@ const ProjectList: React.FC = () => {
             <div className="container mb-5">
                 <h2 id="projectsHeader">Projects</h2>
             </div>
-            <div className="sort-controls" style={{ float: 'right', marginBottom: '10px' }}>
-                <label htmlFor="sortCriteria">Sort By:</label>
-                <select
-                    id="sortCriteria"
-                    value={sortCriteria}
-                    onChange={(e) => setSortCriteria(e.target.value)}
-                    className="form-control"
-                >
-                    <option value="">None</option>
-                    <option value="priority">Priority</option>
-                    <option value="createdAt">Creation Date</option>
-                    <option value="category">Category</option>
-                </select>
+            <div className="row mb-3">
+                <div className="col-md-6">
+                    <input
+                        type="text"
+                        placeholder="Search projects"
+                        className="form-control"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
+                <div className="col-md-6 text-right">
+                    <label htmlFor="sortCriteria">Sort By:</label>
+                    <select
+                        id="sortCriteria"
+                        value={sortCriteria}
+                        onChange={(e) => setSortCriteria(e.target.value)}
+                        className="form-control"
+                        style={{ display: 'inline-block', width: 'auto', marginLeft: '10px' }}
+                    >
+                        <option value="">None</option>
+                        <option value="priority">Priority</option>
+                        <option value="createdAt">Creation Date</option>
+                        <option value="category">Category</option>
+                    </select>
+                </div>
             </div>
             {successMessage && (
                 <Alert severity="success" className={fade ? 'fade-out' : ''}>
