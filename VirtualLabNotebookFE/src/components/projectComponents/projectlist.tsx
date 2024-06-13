@@ -31,6 +31,7 @@ const ProjectList: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [fade, setFade] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [sortCriteria, setSortCriteria] = useState(''); // Default no sorting
     const projectsPerPage = 5;
 
     useEffect(() => {
@@ -105,10 +106,29 @@ const ProjectList: React.FC = () => {
         }
     };
 
+    // Sorting logic
+    const sortProjects = (projects: Project[], criteria: string) => {
+        switch (criteria) {
+            case 'priority':
+                return [...projects].sort((a, b) => {
+                    const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
+                    return priorityOrder[a.priorityLevel] - priorityOrder[b.priorityLevel];
+                });
+            case 'createdAt':
+                return [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            case 'category':
+                return [...projects].sort((a, b) => a.category.localeCompare(b.category));
+            default:
+                return projects;
+        }
+    };
+
+    const sortedProjects = sortCriteria ? sortProjects(projects, sortCriteria) : projects;
+
     // Calculate the projects to display for the current page
     const indexOfLastProject = currentPage * projectsPerPage;
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-    const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+    const currentProjects = sortedProjects.slice(indexOfFirstProject, indexOfLastProject);
 
     // Calculate the total number of pages
     const totalPages = Math.ceil(projects.length / projectsPerPage);
@@ -118,7 +138,23 @@ const ProjectList: React.FC = () => {
 
     return (
         <div className='container mt-5'>
-            <div className="container mb-5"><h2 id="projectsHeader">Projects</h2></div>
+            <div className="container mb-5">
+                <h2 id="projectsHeader">Projects</h2>
+            </div>
+            <div className="sort-controls" style={{ float: 'right', marginBottom: '10px' }}>
+                <label htmlFor="sortCriteria">Sort By:</label>
+                <select
+                    id="sortCriteria"
+                    value={sortCriteria}
+                    onChange={(e) => setSortCriteria(e.target.value)}
+                    className="form-control"
+                >
+                    <option value="">None</option>
+                    <option value="priority">Priority</option>
+                    <option value="createdAt">Creation Date</option>
+                    <option value="category">Category</option>
+                </select>
+            </div>
             {successMessage && (
                 <Alert severity="success" className={fade ? 'fade-out' : ''}>
                     {successMessage}
