@@ -48,6 +48,12 @@
     animation: fadeOut 1s forwards;
 }
 
+/* projects.css */
+.highlight {
+    background-color: yellow; /* Adjust the color as needed */
+    transition: background-color 0.5s ease;
+  }
+
 @keyframes fadeOut {
     from {
         opacity: 1;

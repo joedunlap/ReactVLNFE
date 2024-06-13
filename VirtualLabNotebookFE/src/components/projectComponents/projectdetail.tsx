@@ -14,6 +14,7 @@ import Alert from '@mui/material/Alert';
 import ExportToCSVButton from '../exporttocsvbutton';
 import './projects.css';
 
+
 interface Project {
   id: string;
   name: string;
@@ -49,6 +50,7 @@ const ProjectDetail: React.FC = () => {
   const [sortCriteria, setSortCriteria] = useState(''); // Default no sorting
   const [searchQuery, setSearchQuery] = useState('');
   const samplesPerPage = 5;
+  const [updatedSampleId, setUpdatedSampleId] = useState<string | null>(null);
 
   useEffect(() => {
     if (successMessage) {
@@ -88,6 +90,15 @@ const ProjectDetail: React.FC = () => {
     setSelectedSample(null);
     setOpen(false);
   };
+// TODO: working on highlighting sample when it updates, might remove
+  useEffect(() => {
+    if (updatedSampleId) {
+      const timer = setTimeout(() => {
+        setUpdatedSampleId(null);
+      }, 3000); // Duration for which the highlight should be visible
+      return () => clearTimeout(timer);
+    }
+  }, [updatedSampleId]);
 
   const handleUpdate = (updatedSample: Sample) => {
     setSamples((prevSamples) =>
@@ -98,6 +109,8 @@ const ProjectDetail: React.FC = () => {
     setSelectedSample(null);
     setOpen(false);
     setSuccessMessage('Sample updated successfully!');
+    setUpdatedSampleId(updatedSample.id); // Set the updated sample ID
+
   };
 
   const getPriorityClass = (priorityLevel: string) => {
@@ -222,7 +235,7 @@ const ProjectDetail: React.FC = () => {
                 </thead>
                 <tbody>
                   {currentSamples.map(sample => (
-                    <tr key={sample.id}>
+                   <tr key={sample.id} className={sample.id === updatedSampleId ? 'highlight' : ''}>
                       <td>{sample.id}</td>
                       <td>
                         <Link to={`/projects/${id}/samples/${sample.id}`} state={{ sample }}>
