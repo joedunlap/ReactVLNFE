@@ -46,18 +46,20 @@ const ProjectDetail: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [fade, setFade] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortCriteria, setSortCriteria] = useState(''); // Default no sorting
+  const [searchQuery, setSearchQuery] = useState('');
   const samplesPerPage = 5;
 
   useEffect(() => {
     if (successMessage) {
-        const timer = setTimeout(() => {
-            setFade(true);
-            setTimeout(() => {
-                setSuccessMessage(null);
-                setFade(false);
-            }, 1000); // Duration of the fade-out animation
-        }, 3000); // Show the message for 3 seconds
-        return () => clearTimeout(timer);
+      const timer = setTimeout(() => {
+        setFade(true);
+        setTimeout(() => {
+          setSuccessMessage(null);
+          setFade(false);
+        }, 1000); // Duration of the fade-out animation
+      }, 3000); // Show the message for 3 seconds
+      return () => clearTimeout(timer);
     }
   }, [successMessage]);
 
@@ -95,32 +97,65 @@ const ProjectDetail: React.FC = () => {
     );
     setSelectedSample(null);
     setOpen(false);
-    setSuccessMessage('Project updated successfully!');
+    setSuccessMessage('Sample updated successfully!');
   };
 
   const getPriorityClass = (priorityLevel: string) => {
     switch (priorityLevel) {
-        case 'High':
-            return 'priority-high';
-        case 'Medium':
-            return 'priority-medium';
-        case 'Low':
-            return 'priority-low';
-        default:
-            return '';
+      case 'High':
+        return 'priority-high';
+      case 'Medium':
+        return 'priority-medium';
+      case 'Low':
+        return 'priority-low';
+      default:
+        return '';
     }
   };
 
   // Collect all unique custom fields from the samples
   const customFieldKeys = Array.from(new Set(samples.flatMap(sample => sample.customFields ? Object.keys(sample.customFields) : [])));
 
+  // Sorting logic
+  const sortSamples = (samples: Sample[], criteria: string) => {
+    switch (criteria) {
+      case 'priority':
+        return [...samples].sort((a, b) => {
+          const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
+          return priorityOrder[a.priorityLevel] - priorityOrder[b.priorityLevel];
+        });
+      case 'createdAt':
+        return [...samples].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      case 'category':
+        return [...samples].sort((a, b) => a.category.localeCompare(b.category));
+      default:
+        return samples;
+    }
+  };
+
+  const sortedSamples = sortCriteria ? sortSamples(samples, sortCriteria) : samples;
+
+  // Filter samples based on search query
+  const filterSamples = (samples: Sample[], query: string) => {
+    if (!query) return samples;
+    return samples.filter(sample =>
+      sample.name.toLowerCase().includes(query.toLowerCase()) ||
+      sample.category.toLowerCase().includes(query.toLowerCase()) ||
+      sample.groupAffiliation.toLowerCase().includes(query.toLowerCase()) ||
+      sample.createdAt.includes(query) ||
+      (sample.customFields && Object.values(sample.customFields).some(value => value.toLowerCase().includes(query.toLowerCase())))
+    );
+  };
+
+  const filteredSamples = filterSamples(sortedSamples, searchQuery);
+
   // Calculate the samples to display for the current page
   const indexOfLastSample = currentPage * samplesPerPage;
   const indexOfFirstSample = indexOfLastSample - samplesPerPage;
-  const currentSamples = samples.slice(indexOfFirstSample, indexOfLastSample);
+  const currentSamples = filteredSamples.slice(indexOfFirstSample, indexOfLastSample);
 
   // Calculate the total number of pages
-  const totalPages = Math.ceil(samples.length / samplesPerPage);
+  const totalPages = Math.ceil(filteredSamples.length / samplesPerPage);
 
   // Handle pagination
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -141,7 +176,32 @@ const ProjectDetail: React.FC = () => {
               {project.name}'s Samples
             </h2>
           </div>
-          
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <input
+                type="text"
+                placeholder="Search samples"
+                className="form-control"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="col-md-6 text-right">
+              <label htmlFor="sortCriteria">Sort By:</label>
+              <select
+                id="sortCriteria"
+                value={sortCriteria}
+                onChange={(e) => setSortCriteria(e.target.value)}
+                className="form-control"
+                style={{ display: 'inline-block', width: 'auto', marginLeft: '10px' }}
+              >
+                <option value="">None</option>
+                <option value="priority">Priority</option>
+                <option value="createdAt">Creation Date</option>
+                <option value="category">Category</option>
+              </select>
+            </div>
+          </div>
           {samples.length > 0 ? (
             <div>
               <table id="projects" className="table table-hover">
