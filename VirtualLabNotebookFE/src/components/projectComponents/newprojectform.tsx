@@ -6,6 +6,8 @@ import DNA from '../../assets/images/dna.png';
 import bookStack from '../../assets/images/bookstack.png'
 import './projects.css';
 
+
+
 interface ProjectData {
     name: string;
     description: string;
