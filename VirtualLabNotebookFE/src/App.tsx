@@ -13,6 +13,7 @@ import { ThemeProvider } from "@emotion/react";
 import theme from "./components/themes";
 import SampleDetail from "./components/sampleComponents/sampledetails";
 import TechStack from "./pages/techstack";
+import ResumeComponent from "./pages/resume";
 
 
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="/projects/:id/update-sample" element={<UpdateProject />} />
           <Route path="/projects/:projectId/samples/:sampleId" element={<SampleDetail />} />
           <Route path="/tech-stack" element={<TechStack />} />
+          <Route path="/resume" element={<ResumeComponent />} />
 
       
 
