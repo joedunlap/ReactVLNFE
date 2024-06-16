@@ -27,10 +27,8 @@ const DeleteSampleButton: React.FC<DeleteButtonProps> = ({  onDelete, sampleId, 
     try {
       await axios.delete(`http://localhost:3000/api/v1/projects/${id}/samples/${sampleId}`);
       onDelete(sampleId);
-      alert('Sample deleted successfully');
     } catch (err) {
       console.error('Error deleting sample:', err);
-      alert('Failed to delete sample. Please try again.');
     } finally {
       handleClose();
     }

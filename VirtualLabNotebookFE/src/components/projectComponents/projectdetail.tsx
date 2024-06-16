@@ -79,6 +79,7 @@ const ProjectDetail: React.FC = () => {
 
   const handleDelete = (sampleId: string) => {
     setSamples((prevSamples) => prevSamples.filter(sample => sample.id !== sampleId));
+    setSuccessMessage('Sample deleted successfully!');
   };
 
   const handleEditClick = (sample: Sample) => {
