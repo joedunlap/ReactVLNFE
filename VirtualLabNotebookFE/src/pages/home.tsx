@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import flask from '../assets/images/flasknobg.png'
 import './pages.css'
+import Footer from '../components/footer';
 const Home = () => {
   return (
     <div className="container-fluid">
@@ -9,7 +10,7 @@ const Home = () => {
       <p>This is the home page of your application.</p>
       <Link to="/projects" className="btn btn-primary m-4">View Your Projects</Link>
       <Link to="/projects/new" className="btn btn-success m-4">Create a New Project</Link>
-      
+      <Footer />
     </div>
   );
 };
