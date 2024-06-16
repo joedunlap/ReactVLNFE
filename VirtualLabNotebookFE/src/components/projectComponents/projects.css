@@ -62,3 +62,60 @@
         opacity: 0;
     }
 }
+
+.outer-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.inner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.dna-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.dna-image {
+    max-height: 600px; /* Adjust this value to make the image longer */
+    max-width: 100%;
+}
+
+.form-container {
+    flex: 2;
+    max-width: 800px; /* Adjust the max width to make the form wider */
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.project-form {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .outer-container {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .dna-image {
+        max-width: 80%; /* Adjust for smaller screens */
+        margin-bottom: 20px; /* Space out images on smaller screens */
+    }
+
+    .form-container {
+        margin: 20px 0;
+    }
+}

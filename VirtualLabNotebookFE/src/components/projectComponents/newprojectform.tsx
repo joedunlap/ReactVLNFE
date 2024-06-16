@@ -2,6 +2,9 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { Link } from 'react-router-dom';
 import { Modal, Box, Typography, Button } from '@mui/material';
+import DNA from '../../assets/images/dna.png';
+import bookStack from '../../assets/images/bookstack.png'
+import './projects.css';
 
 interface ProjectData {
     name: string;
@@ -59,43 +62,53 @@ const CreateProject = () => {
     };
 
     return (
-        <div>
-            <h1 className="title">Create a New Project</h1>
-            <br></br>
-            <br></br>
-            <hr></hr>
-            <form onSubmit={handleFormSubmit} className="container">
-                <div className="projectname">
-                    <input className="form-control mb-2" type="text" placeholder="Project Name" onChange={handleFormChange} value={projectData.name} name="name" />
-                    <textarea className="form-control mb-2" placeholder="Optional Description of Project. Note: UUID and timestamp will be created once submit button is clicked." onChange={handleFormChange} value={projectData.description} name="description" />
-                    <select className="form-select mb-2" aria-label="Default select example" onChange={handleFormChange} value={projectData.category} name="category">
-                        <option value="" disabled selected>Please Choose a Project Category</option>
-                        <option value="General Biology">General Biology</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Microbiology">Microbiology</option>
-                        <option value="Botany">Botany</option>
-                        <option value="Other">Other</option>
-                    </select>
-                    <input className="form-control mb-2" type="text" placeholder="Group/Lab Affiliation" onChange={handleFormChange} value={projectData.groupAffiliation} name="groupAffiliation" />
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" id="radio" value="Low" onChange={handleFormChange} name="priorityLevel" />
-                        <label className="form-check-label" htmlFor="inlineCheckbox1">Low Priority</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" id="inlineradio2" value="Medium" onChange={handleFormChange} name="priorityLevel" />
-                        <label className="form-check-label" htmlFor="inlineCheckbox2">Medium Priority</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" id="inlineradio3" value="High" onChange={handleFormChange} name="priorityLevel" />
-                        <label className="form-check-label" htmlFor="inlineCheckbox3">High Priority</label>
-                    </div>
-                    <br></br>
-                    <hr></hr>
-                    <button className="btn btn-success m-4" type="submit">Submit</button>
-                    <Link to="/projects" className="btn btn-secondary m-4">Back to Projects</Link>
+        <div className="outer-container">
+            <div className="inner-container">
+                <div className="dna-image-container">
+                    <img src={DNA} alt="gold dna strand" className="dna-image" />
                 </div>
-            </form>
+                
+                <div className="form-container">
+                    <h1 className="title">Create a New Project</h1>
+                    <form onSubmit={handleFormSubmit} className="project-form">
+                        <div className="projectname">
+                            <input className="form-control mb-2" type="text" placeholder="Project Name" onChange={handleFormChange} value={projectData.name} name="name" />
+                            <textarea className="form-control mb-2" placeholder="Optional Description of Project. Note: UUID and timestamp will be created once submit button is clicked." onChange={handleFormChange} value={projectData.description} name="description" />
+                            <select className="form-select mb-2" aria-label="Default select example" onChange={handleFormChange} value={projectData.category} name="category">
+                                <option value="" disabled selected>Please Choose a Project Category</option>
+                                <option value="General Biology">General Biology</option>
+                                <option value="Chemistry">Chemistry</option>
+                                <option value="Physics">Physics</option>
+                                <option value="Microbiology">Microbiology</option>
+                                <option value="Botany">Botany</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input className="form-control mb-2" type="text" placeholder="Group/Lab Affiliation" onChange={handleFormChange} value={projectData.groupAffiliation} name="groupAffiliation" />
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input" type="radio" id="radio" value="Low" onChange={handleFormChange} name="priorityLevel" />
+                                <label className="form-check-label" htmlFor="inlineCheckbox1">Low Priority</label>
+                            </div>
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input" type="radio" id="inlineradio2" value="Medium" onChange={handleFormChange} name="priorityLevel" />
+                                <label className="form-check-label" htmlFor="inlineCheckbox2">Medium Priority</label>
+                            </div>
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input" type="radio" id="inlineradio3" value="High" onChange={handleFormChange} name="priorityLevel" />
+                                <label className="form-check-label" htmlFor="inlineCheckbox3">High Priority</label>
+                            </div>
+                            <div className="container">
+                            <button className="btn btn-success m-4" type="submit">Submit</button>
+                            <Link to="/projects" className="btn btn-secondary m-4">Back to Projects</Link>
+                            </div>
+                        </div>
+                        
+                    </form>
+                    
+                </div>
+                <div className="dna-image-container">
+                    <img src={DNA} alt="gold dna strand" className="dna-image" />
+                </div>
+            </div>
 
             {/* Modal for success/error message */}
             <Modal
