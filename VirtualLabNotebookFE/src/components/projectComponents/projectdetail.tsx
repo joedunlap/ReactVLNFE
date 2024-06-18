@@ -217,8 +217,8 @@ const ProjectDetail: React.FC = () => {
             </div>
           </div>
           {samples.length > 0 ? (
-            <div>
-              <table id="projects" className="table table-hover">
+            <div className="container table-responsive">
+              <table id="projects" className="table table-hover table-bordered">
                 <thead>
                   <tr>
                     <th className="tableHead">Sample UUID:</th>
