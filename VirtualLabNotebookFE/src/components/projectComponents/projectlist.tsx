@@ -187,54 +187,60 @@ const ProjectList: React.FC = () => {
                 </Alert>
             )}
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-            <table id="projects" className="table table-hover table">
-                <thead>
-                    <tr>
-                        <th className="tableHead">Project UUID</th>
-                        <th className="tableHead">Name</th>
-                        <th className="tableHead">Category</th>
-                        <th className="tableHead">Group Affiliation</th>
-                        <th className="tableHead">Priority Level</th>
-                        <th className="tableHead">Created At</th>
-                        <th className="tableHead">Description</th>
-                        <th className="tableHead">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentProjects.map(project => (
-                        <tr key={project.id}>
-                            <td>{project.id}</td>
-                            <td>
-                                <Link to={`/projects/${project.id}`}>{project.name}</Link>
-                            </td>
-                            <td>{project.category}</td>
-                            <td>{project.groupAffiliation}</td>
-                            <td className={getPriorityClass(project.priorityLevel)}>
-                                {project.priorityLevel}
-                            </td>
-                            <td>{formatDate(project.createdAt)}</td>
-                            <td>{project.description}</td>
-                            <td>
-                                <DeleteProjectButton projectId={project.id} projectName={project.name} onDelete={handleDelete} />
-                                <IconButton onClick={() => handleEditClick(project)} aria-label="edit">
-                                    <EditIcon />
-                                </IconButton>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div className="container table-responsive">
+                <div className="row">
+                    <div className="col">
+                        <table id="projects" className="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th className="tableHead" scope="col">Project UUID</th>
+                                    <th className="tableHead" scope="col">Name</th>
+                                    <th className="tableHead" scope="col">Category</th>
+                                    <th className="tableHead" scope="col">Group Affiliation</th>
+                                    <th className="tableHead" scope="col">Priority Level</th>
+                                    <th className="tableHead" scope="col">Created At</th>
+                                    <th className="tableHead" scope="col">Description</th>
+                                    <th className="tableHead" scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentProjects.map(project => (
+                                    <tr key={project.id}>
+                                        <td data-label="Project UUID">{project.id}</td>
+                                        <td data-label="Project Name">
+                                            <Link to={`/projects/${project.id}`}>{project.name}</Link>
+                                        </td>
+                                        <td data-label="Project Category">{project.category}</td>
+                                        <td data-label="Group Affiliation">{project.groupAffiliation}</td>
+                                        <td data-label="Priority" className={getPriorityClass(project.priorityLevel)}>
+                                            {project.priorityLevel}
+                                        </td>
+                                        <td data-label="Creation Date">{formatDate(project.createdAt)}</td>
+                                        <td data-label="Description">{project.description}</td>
+                                        <td>
+                                            <DeleteProjectButton projectId={project.id} projectName={project.name} onDelete={handleDelete} aria-label ="delete" />
+                                            <IconButton onClick={() => handleEditClick(project)} aria-label="edit">
+                                                <EditIcon />
+                                            </IconButton>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <nav>
                 <ul className="pagination">
-                  {[...Array(totalPages)].map((_, i) => (
-                    <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                      <button onClick={() => paginate(i + 1)} className="page-link">
-                        {i + 1}
-                      </button>
-                    </li>
-                  ))}
+                    {[...Array(totalPages)].map((_, i) => (
+                        <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                            <button onClick={() => paginate(i + 1)} className="page-link">
+                                {i + 1}
+                            </button>
+                        </li>
+                    ))}
                 </ul>
-              </nav>
+            </nav>
             <Link to="/projects/new" className="btn btn-primary m-4">Create a New Project</Link>
             <Link to="/" className="btn btn-secondary m-4">Back to Homepage</Link>
             <Dialog open={open} onClose={handleCancelEdit} aria-labelledby="form-dialog-title" maxWidth="md" fullWidth>
