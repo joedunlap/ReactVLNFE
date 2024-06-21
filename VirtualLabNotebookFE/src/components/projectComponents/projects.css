@@ -7,8 +7,9 @@
     font-size: 3.75em;
     font-weight: 450;
     font-family: 'Roboto', sans-serif;
-  /*  text-decoration: underline rgba(7, 29, 101, 0.826); */
-    
+    border-bottom: 2px solid #060606;
+    padding: 5px;
+    margin: 10px;    
 }
 
 
@@ -17,7 +18,9 @@
     font-size: 2em;
     font-weight: 400;
     font-family: 'Roboto', sans-serif;
-    /* text-decoration: underline rgba(7, 29, 101, 0.826); */
+    border-bottom: 2px solid #060606;
+    padding: 5px;
+    margin: 10px;
 }
 
 #projects .priority-high {

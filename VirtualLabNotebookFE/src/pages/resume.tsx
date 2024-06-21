@@ -1,21 +1,23 @@
 import React from 'react';
 import './resume.css';
+import bookStack from '../assets/images/bookstack.png';
+import Footer from '../components/footer';
 
 const ResumeComponent: React.FC = () => {
     return (
-        <div className="resume-container">
+        <><div className="resume-container">
             <header className="resume-header">
                 <h1>Joseph Dunlap</h1>
                 <p>479-225-6983 | <a href="mailto:joedunlap26@gmail.com">joedunlap26@gmail.com</a></p>
                 <p>
-                    <a href="https://github.com/joedunlap" target="_blank" rel="noopener noreferrer">GitHub</a> | 
+                    <a href="https://github.com/joedunlap" target="_blank" rel="noopener noreferrer">GitHub</a> |
                     <a href="https://www.linkedin.com/in/joe-dunlap" target="_blank" rel="noopener noreferrer">LinkedIn</a>
                 </p>
             </header>
 
             <div className="resume-grid">
                 <section id="education">
-                    <h2>Education</h2>
+                    <h2 className="resumeHeader">Education</h2>
                     <div className="education-item">
                         <h3>Arkansas Coding Academy</h3>
                         <p>Full Stack Development, MEAN Stack - June 2024</p>
@@ -35,7 +37,7 @@ const ResumeComponent: React.FC = () => {
                 </section>
 
                 <section id="skills">
-                    <h2>Skills</h2>
+                    <h2 className="resumeHeader">Skills</h2>
                     <p><strong>Programming Languages & Frameworks:</strong> JavaScript, Node.js, Express, React, Angular, HTML, CSS, Bootstrap, RESTful APIs, R</p>
                     <p><strong>Databases:</strong> MongoDB</p>
                     <p><strong>Tools & Technologies:</strong> Git, Github</p>
@@ -44,7 +46,7 @@ const ResumeComponent: React.FC = () => {
                 </section>
 
                 <section id="experience">
-                    <h2>Experience</h2>
+                    <h2 className="resumeHeader">Experience</h2>
                     <div className="experience-item">
                         <h3>Steep Hill Arkansas</h3>
                         <p>Laboratory Technician - April 2020-Present</p>
@@ -67,10 +69,8 @@ const ResumeComponent: React.FC = () => {
                     </div>
                 </section>
 
-               
-
                 <section id="projects">
-                    <h2>Projects</h2>
+                    <h2 className="resumeHeader">Projects</h2>
                     <div className="project-item">
                         <h3>Virtual Lab Notebook</h3>
                         <p>Developed a full-stack web application to emulate a physical lab notebook.</p>
@@ -78,8 +78,12 @@ const ResumeComponent: React.FC = () => {
                     </div>
                 </section>
 
+                <section id="bookStack" className="image-section">
+                    <img src={bookStack} alt="stack of books with beaker" className="book-stack-image" />
+                </section>
+
                 <section id="achievements">
-                    <h2>Achievements/Awards</h2>
+                    <h2 className="resumeHeader">Achievements/Awards</h2>
                     <ul>
                         <li>Honors International Studies Program/Scholarship at UAFS</li>
                         <li>Presentations:
@@ -94,8 +98,16 @@ const ResumeComponent: React.FC = () => {
                     </ul>
                 </section>
             </div>
-        </div>
+        </div><Footer /></>
     );
 };
 
 export default ResumeComponent;
+
+/* TODO: might make a resume pdf section.. not sure yet <section id="pdf-viewer">
+                    <h2 className="resumeHeader">Download My Resume</h2>
+                    <embed src={resumePDF} type="application/pdf" width="100%" height="600px" />
+                    <p>
+                        <a href={resumePDF} download="Joseph_Dunlap_Resume.pdf" className="btn btn-primary">Download PDF</a>
+                    </p>
+                </section> */
