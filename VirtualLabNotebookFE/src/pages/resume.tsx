@@ -20,30 +20,27 @@ const ResumeComponent: React.FC = () => {
                     <h2 className="resumeHeader">Education</h2>
                     <div className="education-item">
                         <h3>Arkansas Coding Academy</h3>
-                        <p>Full Stack Development, MEAN Stack - June 2024</p>
+                        <p><strong>Full Stack Development, MEAN Stack - June 2024</strong></p>
                         <p>Demo Day Project: Virtual Lab Notebook</p>
                         <p>24-week program focused on technical programming skills to build full-stack web applications.</p>
                     </div>
                     <div className="education-item">
                         <h3>University of Central Arkansas</h3>
-                        <p>Master of Science, Biology - May 2022</p>
-                        <p>Research: Effects of Fertilization and Defoliation on Carbon Remobilization in Northern Red Oak and River Birch Saplings.</p>
+                        <p><strong>M.S., Biology - May 2022</strong></p>
+                        <p>Independent Research: Effects of Fertilization and Defoliation on Carbon Remobilization in Northern Red Oak and River Birch Saplings.</p>
                     </div>
                     <div className="education-item">
                         <h3>University of Arkansas - Fort Smith</h3>
-                        <p>Bachelor of Science, Biology - May 2018</p>
-                        <p>Capstone: Effects of Saline, Acidic, and Alkaline Conditions on Tardigrade Hypsibius dujardini.</p>
+                        <p><strong>B.S., Biology - May 2018</strong></p>
+                        <p>Capstone Project: Effects of Saline, Acidic, and Alkaline Conditions on Tardigrade Hypsibius dujardini.</p>
                     </div>
                 </section>
 
-                <section id="skills">
-                    <h2 className="resumeHeader">Skills</h2>
-                    <p><strong>Programming Languages & Frameworks:</strong> JavaScript, Node.js, Express, React, Angular, HTML, CSS, Bootstrap, RESTful APIs, R</p>
-                    <p><strong>Databases:</strong> MongoDB</p>
-                    <p><strong>Tools & Technologies:</strong> Git, Github</p>
-                    <p><strong>Currently Learning:</strong> Python</p>
-                    <p><strong>Certifications:</strong> CPR and First Aid</p>
+                <section id="bookStack" className="image-section">
+                    <img src={bookStack} alt="stack of books with beaker" className="book-stack-image" />
                 </section>
+
+                
 
                 <section id="experience">
                     <h2 className="resumeHeader">Experience</h2>
@@ -53,7 +50,6 @@ const ResumeComponent: React.FC = () => {
                         <ul>
                             <li>Sample prep for potency, pesticides, microbial, residual solvents, and heavy metal analysis.</li>
                             <li>Operated GC-MS, LC-MS, ICP-MS, and HPLC instruments.</li>
-                            <li>Aided in R&D for SOP improvements and trained new technicians.</li>
                             <li>Built a density calculator using HTML, CSS, and JavaScript.</li>
                         </ul>
                     </div>
@@ -64,22 +60,17 @@ const ResumeComponent: React.FC = () => {
                             <li>Performed assays for Listeria, Salmonella, E. coli, Campylobacter using USDA/FDA methods.</li>
                             <li>Notified clients of positive samples and confirmed results as per guidelines.</li>
                             <li>Trained new lab techs on USDA/FDA confirmations for Salmonella.</li>
-                            <li>Guided new hires during company expansion at FSNS’ Amarillo Lab.</li>
                         </ul>
                     </div>
                 </section>
 
-                <section id="projects">
-                    <h2 className="resumeHeader">Projects</h2>
-                    <div className="project-item">
-                        <h3>Virtual Lab Notebook</h3>
-                        <p>Developed a full-stack web application to emulate a physical lab notebook.</p>
-                        <p>Utilized MongoDB, React, Express, Bootstrap, and Node.js for CRUD functionality and user authentication.</p>
-                    </div>
-                </section>
-
-                <section id="bookStack" className="image-section">
-                    <img src={bookStack} alt="stack of books with beaker" className="book-stack-image" />
+                <section id="skills">
+                    <h2 className="resumeHeader">Skills</h2>
+                    <p><strong>Programming Languages & Frameworks:</strong> JavaScript, Node.js, Express, React, Angular, HTML, CSS, Bootstrap, RESTful APIs, R</p>
+                    <p><strong>Databases:</strong> MongoDB</p>
+                    <p><strong>Tools & Technologies:</strong> Git, Github</p>
+                    <p><strong>Currently Learning:</strong> Python</p>
+                    <p><strong>Certifications:</strong> CPR and First Aid</p>
                 </section>
 
                 <section id="achievements">
@@ -94,8 +85,16 @@ const ResumeComponent: React.FC = () => {
                             </ul>
                         </li>
                         <li>Volunteer for the JBC Center of Archaeological Research/UCA Field School</li>
-                        <li>Studied abroad in Domestic (American Southwest) and International (Scotland, England) Maymesters</li>
                     </ul>
+                </section>
+
+                <section id="projects">
+                    <h2 className="resumeHeader">Projects</h2>
+                    <div className="project-item">
+                        <h3>Virtual Lab Notebook</h3>
+                        <p>Developed a full-stack web application to emulate a physical lab notebook.</p>
+                        <p>Utilized MongoDB, React, Express, Bootstrap, and Node.js for CRUD functionality and user authentication.</p>
+                    </div>
                 </section>
             </div>
         </div><Footer /></>
