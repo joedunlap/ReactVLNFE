@@ -122,3 +122,19 @@
         margin: 20px 0;
     }
 }
+
+.align-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+  .align-right .form-check {
+    margin-left: 50px; /* Adjust this value to increase space between the elements */
+  }
+  
+  .table-container {
+    position: relative;
+  }
+  
+  
