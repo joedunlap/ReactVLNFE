@@ -1,11 +1,11 @@
 import React from 'react';
 import './pages.css';
 import bootstrapIcon  from '../assets/images/bootstrap.png'
-import mongoDbIcon from '../assets/images/mongodb.gif'
+import mongoDbIcon from '../assets/images/nobgmongodb.gif'
 import reactIcon from '../assets/images/react.png'
 import expressIcon from '../assets/images/express-js.png'
 import nodeIcon from '../assets/images/node.png'
-import muiIcon from '../assets/images/mui.png'
+import muiIcon from '../assets/images/nobgmui.png'
 
 
 const TechStack = () => {
