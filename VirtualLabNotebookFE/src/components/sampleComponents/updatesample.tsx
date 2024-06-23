@@ -11,6 +11,7 @@ interface Sample {
     priorityLevel: string;
     category: string;
     groupAffiliation: string;
+    createdAt: string;
 }
 
 interface UpdateSampleProps {
@@ -23,6 +24,7 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
         id: '',
         name: '',
         description: '',
+        createdAt: '',
         projectId: '',
         customFields: {},
         priorityLevel: '',
@@ -39,6 +41,7 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
             name: sample.name,
             description: sample.description,
             id: sample.id,
+            createdAt: sample.createdAt,
             projectId: sample.projectId,
             customFields: sample.customFields || {},
             priorityLevel: sample.priorityLevel,

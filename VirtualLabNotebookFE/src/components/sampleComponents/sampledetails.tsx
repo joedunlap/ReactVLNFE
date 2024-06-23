@@ -9,15 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import DeleteSampleButton from './deletesample';
 import UpdateSample from './updatesample';
-
-interface Sample {
-  id: string;
-  name: string;
-  description: string;
-  projectId: string;
-  createdAt: string;
-  customFields?: { [key: string]: string };
-}
+import { Sample } from '../../types';
 
 const SampleDetail: React.FC = () => {
   const { projectId, sampleId } = useParams<{ projectId: string; sampleId: string }>();
@@ -27,7 +19,7 @@ const SampleDetail: React.FC = () => {
 
   useEffect(() => {
     console.log('Fetching sample details for:', { projectId, sampleId });
-    axios.get(`http://localhost:3000/api/v1/projects/${projectId}/samples/${sampleId}`)
+    axios.get<Sample>(`http://localhost:3000/api/v1/projects/${projectId}/samples/${sampleId}`)
       .then(response => {
         console.log('Sample details fetched successfully:', response.data);
         setSample(response.data);
@@ -62,7 +54,7 @@ const SampleDetail: React.FC = () => {
           <IconButton onClick={handleOpen} aria-label="edit">
             <EditIcon />
           </IconButton>
-          <DeleteSampleButton projectId={projectId} sampleId={sample.id} sampleName={sample.name} onDelete={() => console.log('Deleted')} />
+          <DeleteSampleButton projectId={projectId!} sampleId={sample.id} sampleName={sample.name} onDelete={() => console.log('Deleted')} />
         </div>
         <div className="card-body">
           <p><strong>Sample ID:</strong> {sample.id}</p>
