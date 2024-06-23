@@ -40,5 +40,10 @@
     color: #555;
   }
 
+  #headerVLN {
+    border-bottom: 2px solid #060606;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+  }
 
   

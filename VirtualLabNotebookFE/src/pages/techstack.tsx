@@ -11,7 +11,7 @@ import muiIcon from '../assets/images/nobgmui.png'
 const TechStack = () => {
   return (
     <div className="tech-stack">
-      <h1>Virtual Lab Notebook Tech Stack</h1>
+      <h1 id="headerVLN">Virtual Lab Notebook Tech Stack</h1>
       <div className="tech-list">
         <div className="tech-item">
           <img src={mongoDbIcon} alt="MongoDB" className="tech-logo" />
