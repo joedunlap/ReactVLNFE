@@ -14,13 +14,14 @@ import Alert from '@mui/material/Alert';
 import './projects.css';
 
 interface Project {
-    priorityLevel: string;
     groupAffiliation: string;
     category: string;
     id: string;
     name: string;
     description: string;
     createdAt: string;
+    priorityLevel: string;
+
 }
 
 const ProjectList: React.FC = () => {
@@ -110,21 +111,22 @@ const ProjectList: React.FC = () => {
     // Sorting logic
     const sortProjects = (projects: Project[], criteria: string) => {
         switch (criteria) {
-            case 'priority':
-                return [...projects].sort((a, b) => {
-                    const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
-                    return priorityOrder[a.priorityLevel] - priorityOrder[b.priorityLevel];
-                });
-            case 'createdAt':
-                return [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-            case 'category':
-                return [...projects].sort((a, b) => a.category.localeCompare(b.category));
-            default:
-                return projects;
+          case 'priority':
+            return [...projects].sort((a, b) => {
+              const priorityOrder: { [key: string]: number } = { 'High': 1, 'Medium': 2, 'Low': 3 };
+              return priorityOrder[a.priorityLevel] - priorityOrder[b.priorityLevel];
+            });
+          case 'createdAt':
+            return [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          case 'category':
+            return [...projects].sort((a, b) => a.category.localeCompare(b.category));
+          default:
+            return projects;
         }
-    };
+      };
+      
+      const sortedProjects = sortCriteria ? sortProjects(projects, sortCriteria) : projects;
 
-    const sortedProjects = sortCriteria ? sortProjects(projects, sortCriteria) : projects;
 
     // Filter projects based on search query
     const filterProjects = (projects: Project[], query: string) => {
