@@ -51,6 +51,7 @@ const ProjectDetail: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const samplesPerPage = 5;
   const [updatedSampleId, setUpdatedSampleId] = useState<string | null>(null);
+  const [showSampleUUID, setShowSampleUUID] = useState(true);
 
   useEffect(() => {
     if (successMessage) {
@@ -91,7 +92,7 @@ const ProjectDetail: React.FC = () => {
     setSelectedSample(null);
     setOpen(false);
   };
-// TODO: working on highlighting sample when it updates, might remove
+  // TODO: working on highlighting sample when it updates, might remove
   useEffect(() => {
     if (updatedSampleId) {
       const timer = setTimeout(() => {
@@ -214,6 +215,16 @@ const ProjectDetail: React.FC = () => {
                 <option value="createdAt">Creation Date</option>
                 <option value="category">Category</option>
               </select>
+              <div className="form-check form-check-inline" style={{ marginLeft: '10px' }}>
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="toggleSampleUUID"
+                  checked={showSampleUUID}
+                  onChange={() => setShowSampleUUID(!showSampleUUID)}
+                />
+                <label className="form-check-label" htmlFor="toggleSampleUUID">Show Sample UUID</label>
+              </div>
             </div>
           </div>
           {samples.length > 0 ? (
@@ -221,8 +232,7 @@ const ProjectDetail: React.FC = () => {
               <table id="projects" className="table table-hover table-bordered">
                 <thead>
                   <tr>
-                    <th className="tableHead">Sample UUID:</th>
-                    <th className="tableHead">Name:</th>
+                    {showSampleUUID && <th className="tableHead">Sample UUID</th>}                    <th className="tableHead">Name:</th>
                     <th className="tableHead">Category:</th>
                     <th className="tableHead">Group Affiliation:</th>
                     <th className="tableHead">Priority Level:</th>
@@ -236,8 +246,8 @@ const ProjectDetail: React.FC = () => {
                 </thead>
                 <tbody>
                   {currentSamples.map(sample => (
-                   <tr key={sample.id} className={sample.id === updatedSampleId ? 'highlight' : ''}>
-                      <td>{sample.id}</td>
+                    <tr key={sample.id} className={sample.id === updatedSampleId ? 'highlight' : ''}>
+                      {showSampleUUID && <td>{sample.id}</td>}
                       <td>
                         <Link to={`/projects/${id}/samples/${sample.id}`} state={{ sample }}>
                           {sample.name}
@@ -278,12 +288,12 @@ const ProjectDetail: React.FC = () => {
           ) : (
             <p>No samples found for this project.</p>
           )}
-          
+
           <ExportToCSVButton project={project} samples={samples} />
-          <Link 
+          <Link
             to={`/projects/${id}/create-sample`}
-            state={{ 
-              projectName: project.name, 
+            state={{
+              projectName: project.name,
               projectId: project.id,
               category: project.category,
               groupAffiliation: project.groupAffiliation,
