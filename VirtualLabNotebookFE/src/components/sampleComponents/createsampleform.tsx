@@ -3,6 +3,8 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import FieldSelector from '../fieldselector/fieldselector';
 import { Modal, Box, Typography, Button } from '@mui/material';
+import './samples.css';
+import DNA from '../../assets/images/dna.png';
 
 // Define interfaces
 interface SampleData {
@@ -106,69 +108,89 @@ const CreateSample: React.FC = () => {
     setOpenModal(false);
   };
 
+  const getPriorityClass = (priorityLevel: string) => {
+    switch (priorityLevel) {
+      case 'High':
+        return 'priority-high';
+      case 'Medium':
+        return 'priority-medium';
+      case 'Low':
+        return 'priority-low';
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="container mt-5">
-      <h1>Create Sample for {projectName}</h1>
-      <p>Project ID: {projectId}</p>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
-          <input
-            className="form-control mb-2"
-            type="text"
-            name="name"
-            value={sampleData.name}
-            onChange={handleInputChange}
-            required
-          />
+      <h1 id='createSampleHeader'>Create Sample for <span className={getPriorityClass(priorityLevel)}>{projectName}</span></h1>
+      <p id='projectID'><strong>Project ID: {projectId}</strong></p>
+      <div className="dna-form-container">
+        <div className="dna-image-container">
+          <img src={DNA} alt="gold dna strand" className="dna-image" />
         </div>
-        <div>
-          <label>Description:</label>
-          <textarea
-            className="form-control mb-2"
-            placeholder="Optional description of sample. Use custom fields for sample data."
-            name="description"
-            value={sampleData.description}
-            onChange={handleInputChange}
-          />
+        <form onSubmit={handleSubmit} className="sample-form">
+          <div>
+            <label>Name:</label>
+            <input
+              className="form-control mb-2"
+              type="text"
+              name="name"
+              value={sampleData.name}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Description:</label>
+            <textarea
+              className="form-control mb-2"
+              placeholder="Optional description of sample. Use custom fields for sample data."
+              name="description"
+              value={sampleData.description}
+              onChange={handleInputChange}
+            />
+          </div>
+          <FieldSelector onChange={handleCustomFieldChange} reset={resetFields} onResetComplete={handleResetComplete} />
+          <div>
+            <label>Category:</label>
+            <input
+              className="form-control mb-2"
+              type="text"
+              name="category"
+              value={sampleData.category}
+              readOnly
+            />
+          </div>
+          <div>
+            <label>Group Affiliation:</label>
+            <input
+              className="form-control mb-2"
+              type="text"
+              name="groupAffiliation"
+              value={sampleData.groupAffiliation}
+              readOnly
+            />
+          </div>
+          <div>
+            <label>Priority Level:</label>
+            <input
+              className="form-control mb-2"
+              type="text"
+              name="priorityLevel"
+              value={sampleData.priorityLevel}
+              readOnly
+            />
+          </div>
+          <button className="btn btn-primary m-4" type="submit">Create Sample</button>
+          <Link to={`/projects/${projectId}`} className="btn btn-secondary m-4">
+            Back to Current Project
+          </Link>
+        </form>
+        <div className="dna-image-container">
+          <img src={DNA} alt="gold dna strand" className="dna-image" />
         </div>
-        <FieldSelector onChange={handleCustomFieldChange} reset={resetFields} onResetComplete={handleResetComplete} />
-        <div>
-          <label>Category:</label>
-          <input
-            className="form-control mb-2"
-            type="text"
-            name="category"
-            value={sampleData.category}
-            readOnly
-          />
-        </div>
-        <div>
-          <label>Group Affiliation:</label>
-          <input
-            className="form-control mb-2"
-            type="text"
-            name="groupAffiliation"
-            value={sampleData.groupAffiliation}
-            readOnly
-          />
-        </div>
-        <div>
-          <label>Priority Level:</label>
-          <input
-            className="form-control mb-2"
-            type="text"
-            name="priorityLevel"
-            value={sampleData.priorityLevel}
-            readOnly
-          />
-        </div>
-        <button className="btn btn-primary m-4" type="submit">Create Sample</button>
-        <Link to={`/projects/${projectId}`} className="btn btn-secondary m-4">
-          Back to Current Project
-        </Link>
-      </form>
-
+      </div>
       {/* Modal for success/error message */}
       <Modal
         open={openModal}
@@ -207,7 +229,7 @@ const CreateSample: React.FC = () => {
           </Typography>
           <Button
             variant="contained"
-            color={errorMessage ? 'error' : 'violet'}
+            color={errorMessage ? 'error' : 'primary'}
             onClick={handleCloseModal}
             sx={{ mt: 2 }}
           >

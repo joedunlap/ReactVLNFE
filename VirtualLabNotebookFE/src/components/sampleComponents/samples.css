@@ -1,0 +1,50 @@
+#createSampleHeader {
+    font-size: 3em;
+    font-weight: 450;
+    font-family: 'Roboto', sans-serif;
+    padding: 5px;
+    margin: 10px;
+}
+
+#projectID {
+    border-bottom: 2px solid #060606;
+    padding: 5px;
+    margin: 10px;
+}
+
+.dna-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .dna-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .dna-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 700px; /* Adjust as needed */
+  }
+  
+  .sample-form {
+    flex: 2;
+    max-width: 600px; /* Adjust as needed */
+    margin: 0 20px; /* Adjust spacing between the images and form */
+  }
+
+  .priority-high {
+    color: red;
+  }
+  
+  .priority-medium {
+    color: orange;
+  }
+  
+  .priority-low {
+    color: green;
+  }

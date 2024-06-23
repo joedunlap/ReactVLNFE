@@ -3,7 +3,6 @@ import axios, { AxiosResponse } from 'axios';
 import { Link } from 'react-router-dom';
 import { Modal, Box, Typography, Button } from '@mui/material';
 import DNA from '../../assets/images/dna.png';
-import bookStack from '../../assets/images/bookstack.png'
 import './projects.css';
 
 
