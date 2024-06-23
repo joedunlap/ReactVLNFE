@@ -13,6 +13,7 @@ interface DeleteButtonProps {
   onDelete: (sampleId: string) => void;
   sampleId: string; 
   sampleName: string;
+  projectName: string;
 }
 
 const DeleteSampleButton: React.FC<DeleteButtonProps> = ({  onDelete, sampleId, sampleName }) => {

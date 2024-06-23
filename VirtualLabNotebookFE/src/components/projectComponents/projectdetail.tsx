@@ -67,15 +67,19 @@ const ProjectDetail: React.FC = () => {
   }, [successMessage]);
 
   useEffect(() => {
-    // Fetch project details
-    axios.get(`http://localhost:3000/api/v1/projects/${id}`)
-      .then(response => setProject(response.data))
-      .catch(error => setErrorMessage('Error fetching project details'));
+    const fetchProjectData = async () => {
+      try {
+        const projectResponse = await axios.get(`http://localhost:3000/api/v1/projects/${id}`);
+        setProject(projectResponse.data);
 
-    // Fetch samples affiliated with the project
-    axios.get(`http://localhost:3000/api/v1/projects/${id}/samples`)
-      .then(response => setSamples(response.data))
-      .catch(error => setErrorMessage('Error fetching samples'));
+        const samplesResponse = await axios.get(`http://localhost:3000/api/v1/projects/${id}/samples`);
+        setSamples(samplesResponse.data);
+      } catch (error) {
+        setErrorMessage('Error fetching project details or samples');
+      }
+    };
+
+    fetchProjectData();
   }, [id]);
 
   const handleDelete = (sampleId: string) => {
@@ -136,8 +140,8 @@ const ProjectDetail: React.FC = () => {
     switch (criteria) {
       case 'priority':
         return [...samples].sort((a, b) => {
-          const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
-          return priorityOrder[a.priorityLevel] - priorityOrder[b.priorityLevel];
+          const priorityOrder: { [key: string]: number } = { 'High': 1, 'Medium': 2, 'Low': 3 };
+          return priorityOrder[a.priorityLevel as keyof typeof priorityOrder] - priorityOrder[b.priorityLevel as keyof typeof priorityOrder];
         });
       case 'createdAt':
         return [...samples].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -192,47 +196,48 @@ const ProjectDetail: React.FC = () => {
             </h2>
           </div>
           <div className="row mb-3">
-  <div className="col-md-6">
-    <input
-      type="text"
-      placeholder="Search samples"
-      className="form-control"
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-    />
-  </div>
-  <div className="col-md-6 align-right">
-    <label htmlFor="sortCriteria">Sort By:</label>
-    <select
-      id="sortCriteria"
-      value={sortCriteria}
-      onChange={(e) => setSortCriteria(e.target.value)}
-      className="form-control"
-      style={{ display: 'inline-block', width: 'auto', marginLeft: '10px' }}
-    >
-      <option value="">None</option>
-      <option value="priority">Priority</option>
-      <option value="createdAt">Creation Date</option>
-      <option value="category">Category</option>
-    </select>
-    <div className="form-check form-check-inline show-sample-uuid">
-      <input
-        className="form-check-input"
-        type="checkbox"
-        id="toggleSampleUUID"
-        checked={showSampleUUID}
-        onChange={() => setShowSampleUUID(!showSampleUUID)}
-      />
-      <label className="form-check-label" htmlFor="toggleSampleUUID">Show Sample UUID</label>
-    </div>
-  </div>
-</div>
+            <div className="col-md-6">
+              <input
+                type="text"
+                placeholder="Search samples"
+                className="form-control"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="col-md-6 align-right">
+              <label htmlFor="sortCriteria">Sort By:</label>
+              <select
+                id="sortCriteria"
+                value={sortCriteria}
+                onChange={(e) => setSortCriteria(e.target.value)}
+                className="form-control"
+                style={{ display: 'inline-block', width: 'auto', marginLeft: '10px' }}
+              >
+                <option value="">None</option>
+                <option value="priority">Priority</option>
+                <option value="createdAt">Creation Date</option>
+                <option value="category">Category</option>
+              </select>
+              <div className="form-check form-check-inline show-sample-uuid">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="toggleSampleUUID"
+                  checked={showSampleUUID}
+                  onChange={() => setShowSampleUUID(!showSampleUUID)}
+                />
+                <label className="form-check-label" htmlFor="toggleSampleUUID">Show Sample UUID</label>
+              </div>
+            </div>
+          </div>
           {samples.length > 0 ? (
             <div className="container table-responsive">
               <table id="projects" className="table table-hover table-bordered">
                 <thead>
                   <tr>
-                    {showSampleUUID && <th className="tableHead">Sample UUID</th>}                    <th className="tableHead">Name:</th>
+                    {showSampleUUID && <th className="tableHead">Sample UUID</th>}
+                    <th className="tableHead">Name:</th>
                     <th className="tableHead">Category:</th>
                     <th className="tableHead">Group Affiliation:</th>
                     <th className="tableHead">Priority Level:</th>

@@ -28,7 +28,7 @@ const CreateProject = () => {
         groupAffiliation: '',
         priorityLevel: ''
     });
-    const [successMessage, setSuccessMessage] = useState('');
+    const [, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [createdProject, setCreatedProject] = useState<CreatedProject | null>(null);
     const [openModal, setOpenModal] = useState(false);

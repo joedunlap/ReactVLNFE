@@ -54,7 +54,7 @@ const SampleDetail: React.FC = () => {
           <IconButton onClick={handleOpen} aria-label="edit">
             <EditIcon />
           </IconButton>
-          <DeleteSampleButton projectId={projectId!} sampleId={sample.id} sampleName={sample.name} onDelete={() => console.log('Deleted')} />
+          <DeleteSampleButton projectId={projectId!} sampleId={sample.id} sampleName={sample.name} onDelete={() => console.log('Deleted')} projectName={''} />
         </div>
         <div className="card-body">
           <p><strong>Sample ID:</strong> {sample.id}</p>
