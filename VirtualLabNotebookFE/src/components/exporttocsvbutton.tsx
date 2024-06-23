@@ -28,14 +28,14 @@ const ExportToCSVButton: React.FC<ExportToCSVButtonProps> = ({ project, samples 
   const exportToCSV = () => {
     if (!project) return;
 
-    // Create headers for the CSV
+    // Define headers
     const headers = ["Project ID", "Project Name", "Project Description", "Project Created At"];
     const sampleHeaders = ["Sample ID", "Sample Name", "Sample Description", "Sample Created At"];
     const customFieldHeaders = new Set<string>();
 
     // Flatten project and sample data
-    const data: any[] = samples.map(sample => {
-      const flattenedSample = {
+    const data = samples.map(sample => {
+      const flattenedSample: { [key: string]: string } = {
         "Project ID": project.id,
         "Project Name": project.name,
         "Project Description": project.description,
@@ -72,7 +72,7 @@ const ExportToCSVButton: React.FC<ExportToCSVButtonProps> = ({ project, samples 
   };
 
   return (
-    <Button onClick={exportToCSV} variant="contained" color="violet" className="m-4">
+    <Button onClick={exportToCSV} variant="contained" color="primary" className="m-4">
       Export to CSV
     </Button>
   );
