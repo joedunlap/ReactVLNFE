@@ -1,4 +1,3 @@
-import React from 'react';
 import './pages.css';
 import bootstrapIcon  from '../assets/images/bootstrap.png'
 import mongoDbIcon from '../assets/images/nobgmongodb.gif'

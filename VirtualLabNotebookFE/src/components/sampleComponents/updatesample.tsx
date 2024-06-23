@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import FieldSelector from '../fieldselector/fieldselector';
 
 interface Sample {
@@ -19,10 +19,10 @@ interface UpdateSampleProps {
 }
 
 const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<Sample>({
+        id: '',
         name: '',
         description: '',
-        id: '',
         projectId: '',
         customFields: {},
         priorityLevel: '',
@@ -84,7 +84,7 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
         event.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.patch(`http://localhost:3000/api/v1/projects/${sample.projectId}/samples/${sample.id}`, formData, {
+            const response = await axios.patch<Sample>(`http://localhost:3000/api/v1/projects/${sample.projectId}/samples/${sample.id}`, formData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -96,7 +96,8 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
                 setSuccessMessage(null); 
             }, 5000);   // Automatically clear the message after 5 seconds
         } catch (err) {
-            setError(err.message);
+            const error = err as AxiosError;
+            setError(error.message);
             setLoading(false);
         }
     };
@@ -131,7 +132,7 @@ const UpdateSample: React.FC<UpdateSampleProps> = ({ sample, onUpdate }) => {
                 <label htmlFor="groupAffiliation">Group Affiliation:</label>
                 <input id="groupAffiliation" name="groupAffiliation" type="text" value={formData.groupAffiliation} readOnly className="form-control" />
             </div>
-            {Object.entries(formData.customFields).map(([key, value]) => (
+            {Object.entries(formData.customFields || {}).map(([key, value]) => (
                 <div className="form-group" key={key}>
                     <label htmlFor={`customFields.${key}`}>{key}:</label>
                     <input id={`customFields.${key}`} name={`customFields.${key}`} type="text" value={value} onChange={handleChange} className="form-control" />
