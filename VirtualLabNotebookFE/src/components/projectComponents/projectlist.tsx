@@ -161,7 +161,7 @@ const ProjectList: React.FC = () => {
                 <div className="col-md-6">
                     <input
                         type="text"
-                        placeholder="Search projects"
+                        placeholder="Search projects by name, category, or group affiliation"
                         className="form-control"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
