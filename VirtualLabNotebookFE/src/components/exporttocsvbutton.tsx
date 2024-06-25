@@ -72,7 +72,7 @@ const ExportToCSVButton: React.FC<ExportToCSVButtonProps> = ({ project, samples 
   };
 
   return (
-    <Button onClick={exportToCSV} variant="contained" color="primary" className="m-4">
+    <Button onClick={exportToCSV} variant="contained" color="violet" className="m-4">
       Export to CSV
     </Button>
   );
