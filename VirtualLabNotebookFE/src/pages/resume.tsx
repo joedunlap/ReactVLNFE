@@ -93,7 +93,7 @@ const ResumeComponent: React.FC = () => {
                     <div className="project-item">
                         <h3>Virtual Lab Notebook</h3>
                         <p>Developed a full-stack web application to emulate a physical lab notebook.</p>
-                        <p>Utilized MongoDB, React, Express, Bootstrap, and Node.js for CRUD functionality and user authentication.</p>
+                        <p>Utilized MongoDB, React, Express, Bootstrap, and Node.js for CRUD functionality and to be implemented user authentication.</p>
                     </div>
                 </section>
             </div>
